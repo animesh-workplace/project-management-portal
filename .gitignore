@@ -9,6 +9,9 @@ __pycache__/
 # C extensions
 *.so
 
+# O365 authentication file
+o365_token.txt
+
 # Distribution / packaging
 .Python
 build/
@@ -85,6 +88,8 @@ target/
 profile_default/
 ipython_config.py
 
+# Migrations
+migrations/
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
