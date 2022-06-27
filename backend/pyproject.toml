@@ -10,6 +10,7 @@ Django = "4.0.5"
 O365 = "^2.0.19"
 python-dotenv = "^0.20.0"
 django-cors-headers = "^3.13.0"
+djangorestframework = "^3.13.1"
 
 [tool.poetry.dev-dependencies]
 
