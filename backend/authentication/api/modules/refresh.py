@@ -23,15 +23,18 @@ class CookieRefreshSerializer(TokenRefreshSerializer):
     String
         Refresh token
     """
-    refresh = serializers.CharField(required=False, help_text='Will override cookie')
+
+    refresh = serializers.CharField(required=False, help_text="Will override cookie")
 
     def extract_refresh_token(self):
-        request = self.context['request']
-        cookie_name = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE', None)
-        if(cookie_name and cookie_name in request.COOKIES):
+        request = self.context["request"]
+        cookie_name = getattr(settings, "JWT_AUTH_REFRESH_COOKIE", None)
+        if cookie_name and cookie_name in request.COOKIES:
             return request.COOKIES.get(cookie_name)
         else:
-            raise serializers.ValidationError({'Error': 'No valid refresh token found'}, code='natural')
+            raise serializers.ValidationError(
+                {"Error": "No valid refresh token found"}, code="natural"
+            )
 
     def validate(self, value):
         refresh = RefreshToken(self.extract_refresh_token())
@@ -51,14 +54,17 @@ class CookieRefreshView(TokenRefreshView):
     Cookie
         Refreshes jwt-auth token and updates the expiration date
     """
+
     serializer_class = CookieRefreshSerializer
     permission_classes = []
 
     def get_refreshed_token(self, access_token):
         data = {
-            'code': 'SUCCESS',
-            'message': 'Token Refreshed',
-            'expiration': (timezone.localtime(timezone.now()) + settings.JWT_AUTH_LIFETIME),
+            "code": "SUCCESS",
+            "message": "Token Refreshed",
+            "expiration": (
+                timezone.localtime(timezone.now()) + settings.JWT_AUTH_LIFETIME
+            ),
         }
         response = Response(data, status=status.HTTP_200_OK)
         set_jwt_access_cookie(response, access_token)
@@ -67,6 +73,9 @@ class CookieRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         self.request = request
         self.serializer = self.get_serializer(data=self.request.data)
-        if(self.serializer.is_valid()):
+        if self.serializer.is_valid():
             return self.get_refreshed_token(self.serializer.validated_data)
-        return Response(create_uniform_response(self.serializer.errors), status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response(
+            create_uniform_response(self.serializer.errors),
+            status=status.HTTP_406_NOT_ACCEPTABLE,
+        )

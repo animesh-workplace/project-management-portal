@@ -23,13 +23,16 @@ class LogoutView(APIView):
     Cookies
         Empties the cookies jwt-auth, jwt-refresh and csrf_token
     """
+
     permission_classes = []
 
     def post(self, request, *args, **kwargs):
         return self.logout(request)
 
     def logout(self, request):
-        response = Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
-        cookie_name = getattr(settings, 'JWT_AUTH_COOKIE', None)
+        response = Response(
+            {"message": "Successfully logged out"}, status=status.HTTP_200_OK
+        )
+        cookie_name = getattr(settings, "JWT_AUTH_COOKIE", None)
         unset_jwt_cookies(response)
         return response

@@ -19,12 +19,12 @@ class CheckRefreshabilitySerializer(serializers.Serializer):
     """
 
     def extract_refresh_token_status(self):
-        request = self.context['request']
-        cookie_name = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE', None)
-        if(cookie_name and cookie_name in request.COOKIES):
-            return 'Refreshable'
+        request = self.context["request"]
+        cookie_name = getattr(settings, "JWT_AUTH_REFRESH_COOKIE", None)
+        if cookie_name and cookie_name in request.COOKIES:
+            return "Refreshable"
         else:
-            return 'Unauthenticated'
+            return "Unauthenticated"
 
     def validate(self, value):
         return self.extract_refresh_token_status()
@@ -48,23 +48,27 @@ class AuthenticationStatusView(generics.GenericAPIView):
             - Authenticated
             - Unauthenticated
     """
+
     serializer_class = CheckRefreshabilitySerializer
     permission_classes = []
 
     def get_authentication_status(self, auth_status):
         data = {
-            'code': 'SUCCESS',
-            'message': auth_status,
+            "code": "SUCCESS",
+            "message": auth_status,
         }
         response = Response(data, status=status.HTTP_200_OK)
         return response
 
     def post(self, request, *args, **kwargs):
         self.request = request
-        if(self.request.user.is_authenticated):
-            return self.get_authentication_status('Authenticated')
+        if self.request.user.is_authenticated:
+            return self.get_authentication_status("Authenticated")
         else:
             self.serializer = self.get_serializer(data=self.request.data)
-            if(self.serializer.is_valid()):
+            if self.serializer.is_valid():
                 return self.get_authentication_status(self.serializer.validated_data)
-        return Response(create_uniform_response(self.serializer.errors), status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response(
+            create_uniform_response(self.serializer.errors),
+            status=status.HTTP_406_NOT_ACCEPTABLE,
+        )

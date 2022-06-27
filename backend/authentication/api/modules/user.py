@@ -45,6 +45,7 @@ class UserDetailSerializer(serializers.Serializer):
     PUT:
             Success/Failure message
     """
+
     bio = serializers.CharField(required=False)
     avatar = serializers.ImageField(required=False)
     poster = serializers.ImageField(required=False)
@@ -59,33 +60,51 @@ class UserDetailSerializer(serializers.Serializer):
     pin_code = serializers.DecimalField(required=False, max_digits=10, decimal_places=0)
 
     class Meta:
-        fields = ['username', 'email', 'first_name', 'last_name', 'bio',
-                  'city', 'state', 'avatar', 'poster', 'address', 'pin_code', 'institute',
-                  'birth_date', 'job_profile', 'user_type', 'login_history', 'date_joined']
+        fields = [
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "bio",
+            "city",
+            "state",
+            "avatar",
+            "poster",
+            "address",
+            "pin_code",
+            "institute",
+            "birth_date",
+            "job_profile",
+            "user_type",
+            "login_history",
+            "date_joined",
+        ]
         model = get_user_model()
 
     def validate(self, value):
-        if(self.context['request'].META['REQUEST_METHOD'] == 'POST'):
-            user = self.context['request'].user
+        if self.context["request"].META["REQUEST_METHOD"] == "POST":
+            user = self.context["request"].user
             value = {
-                attr: getattr(user, attr, None) if(attr not in ['avatar', 'poster']) else getattr(user, attr, None).url
+                attr: getattr(user, attr, None)
+                if (attr not in ["avatar", "poster"])
+                else getattr(user, attr, None).url
                 for attr in self.Meta.fields
             }
             return {
-                'data': value,
-                'code': 'SUCCESS',
-                'message': 'User information',
+                "data": value,
+                "code": "SUCCESS",
+                "message": "User information",
             }
-        elif(self.context['request'].META['REQUEST_METHOD'] == 'PUT'):
+        elif self.context["request"].META["REQUEST_METHOD"] == "PUT":
             return value
 
     def update(self, instance, validated_data):
-        raise_errors_on_nested_writes('update', self, validated_data)
+        raise_errors_on_nested_writes("update", self, validated_data)
         info = model_meta.get_field_info(instance)
 
         m2m_fields = []
         for (attr, value) in validated_data.items():
-            if(attr in info.relations and info.relations[attr].to_many):
+            if attr in info.relations and info.relations[attr].to_many:
                 m2m_fields.append((attr, value))
             else:
                 setattr(instance, attr, value)
@@ -120,26 +139,35 @@ class UserDetailView(generics.GenericAPIView):
     PUT:
             Message
     """
+
     queryset = get_user_model()
     serializer_class = UserDetailSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)
-        if(self.serializer.is_valid()):
+        if self.serializer.is_valid():
             return Response(self.serializer.validated_data)
-        return Response(create_uniform_response(self.serializer.errors), status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response(
+            create_uniform_response(self.serializer.errors),
+            status=status.HTTP_406_NOT_ACCEPTABLE,
+        )
 
     def put(self, request, *args, **kwargs):
         user_obj = request.user
         self.serializer = self.get_serializer(data=request.data)
-        if(self.serializer.is_valid()):
+        if self.serializer.is_valid():
             validated_data = self.serializer.validated_data
-            if(bool(validated_data)):
+            if bool(validated_data):
                 self.serializer.update(user_obj, validated_data)
-                return Response({
-                    'code': 'SUCCESS',
-                    'message': 'Updated Successfully',
-                })
+                return Response(
+                    {
+                        "code": "SUCCESS",
+                        "message": "Updated Successfully",
+                    }
+                )
             return Response({"message": "No data updated"})
-        return Response(create_uniform_response(self.serializer.errors), status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response(
+            create_uniform_response(self.serializer.errors),
+            status=status.HTTP_406_NOT_ACCEPTABLE,
+        )
