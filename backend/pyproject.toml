@@ -9,6 +9,7 @@ python = "^3.10"
 Django = "4.0.5"
 O365 = "^2.0.19"
 python-dotenv = "^0.20.0"
+django-cors-headers = "^3.13.0"
 
 [tool.poetry.dev-dependencies]
 
