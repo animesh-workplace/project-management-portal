@@ -7,6 +7,7 @@ authors = ["Animesh Kumar Singh <animesh.workplace@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 Django = "4.0.5"
+O365 = "^2.0.19"
 
 [tool.poetry.dev-dependencies]
 
