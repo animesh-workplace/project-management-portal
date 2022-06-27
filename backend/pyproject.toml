@@ -14,6 +14,7 @@ djangorestframework = "^3.13.1"
 djangorestframework-simplejwt = "^5.2.0"
 Pillow = "^9.1.1"
 django-ipware = "^4.0.2"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 colorama = "^0.4.5"
