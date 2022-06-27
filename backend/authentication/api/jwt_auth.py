@@ -15,20 +15,20 @@ class JWTCookieAuthentication(JWTAuthentication):
         """
         Enforce CSRF validation for session based authentication.
         """
-        check = CSRFCheck()
+        check = CSRFCheck(request)
         check.process_request(request)
         reason = check.process_view(request, None, (), {})
-        if(reason):
+        if reason:
             # CSRF failed, bail with explicit error message
             raise exceptions.PermissionDenied(reason)
 
     def authenticate(self, request):
-        cookie_name = getattr(settings, 'JWT_AUTH_COOKIE', None)
+        cookie_name = getattr(settings, "JWT_AUTH_COOKIE", None)
         raw_token = request.COOKIES.get(cookie_name)
-        if(raw_token is None):
+        if raw_token is None:
             return None
-        if(getattr(settings, 'JWT_AUTH_COOKIE_USE_CSRF', False)):
-            if(raw_token is not None):
+        if getattr(settings, "JWT_AUTH_COOKIE_USE_CSRF", False):
+            if raw_token is not None:
                 self.enforce_csrf(request)
 
         validated_token = self.get_validated_token(raw_token)
