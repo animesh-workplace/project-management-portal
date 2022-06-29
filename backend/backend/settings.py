@@ -28,6 +28,7 @@ DEFAULT_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    "channels",
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
@@ -67,6 +68,16 @@ TEMPLATES = [
 ]
 
 ASGI_APPLICATION = "backend.asgi.application"
+
+# Channel Layers
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
 
 # Database
 DATABASES = {
