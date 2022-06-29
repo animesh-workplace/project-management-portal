@@ -1,16 +1,6 @@
 from django.db import models
-
-
-class Projectname(models.Model):
-    modelname = models.CharField(max_length=100, primary_key=True)
-    config_file = models.JSONField()
-
-    def __str__(self):
-        return self.modelname
-
-
-from email.policy import default
 from django.db import models
+from email.policy import default
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.exceptions import FieldDoesNotExist
@@ -20,6 +10,14 @@ from projects.api.factory import ModelFactory, FieldFactory
 from projects.api.utils import LastModifiedCache, ModelRegistry
 from projects.api.schema import ModelSchemaEditor, FieldSchemaEditor
 from projects.api.exceptions import NullFieldChangedError, InvalidFieldNameError
+
+
+class Projectname(models.Model):
+    modelname = models.CharField(max_length=100, primary_key=True)
+    config_file = models.JSONField()
+
+    def __str__(self):
+        return self.modelname
 
 
 class ModelSchema(models.Model):
