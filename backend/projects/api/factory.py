@@ -1,7 +1,6 @@
 from django.db import models
-from django.utils import timezone
-
 from projects.api import config
+from django.utils import timezone
 from projects.api.utils import ModelRegistry
 from projects.api.exceptions import OutdatedModelError
 
