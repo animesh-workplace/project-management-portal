@@ -42,6 +42,20 @@ urlpatterns = [
                                     namespace="user-api",
                                 ),
                             ),
+                            path(
+                                "projects/",
+                                include(
+                                    ("projects.api.urls", "project_management"),
+                                    namespace="projects-api",
+                                ),
+                            ),
+                            path(
+                                "modules/",
+                                include(
+                                    ("modules.api.urls", "modules_management"),
+                                    namespace="modules-api",
+                                ),
+                            ),
                         ]
                     ),
                 ),
