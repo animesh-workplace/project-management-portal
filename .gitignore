@@ -236,3 +236,6 @@ sw.*
 
 # Sublime
 *.sublime*
+
+# VSCode
+.vscode/
