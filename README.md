@@ -4,9 +4,9 @@
 
 > Running reloading backend server
 ```python3
-gunicorn backend.asgi:application -b 0.0.0.0:8004 -k uvicorn.workers.UvicornWorker --reload 
+gunicorn backend.asgi:application -c gunicorn.config.py --reload 
 ```
 or
 ```python3
-gunicorn backend.asgi:application -b 0.0.0.0:8004 -k uvicorn.workers.UvicornWorker --log-level debug --reload 
+gunicorn backend.asgi:application -c gunicorn.config.py --log-level debug --reload 
 ```
