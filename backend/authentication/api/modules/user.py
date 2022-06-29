@@ -48,7 +48,6 @@ class UserDetailSerializer(serializers.Serializer):
 
     bio = serializers.CharField(required=False)
     avatar = serializers.ImageField(required=False)
-    poster = serializers.ImageField(required=False)
     last_name = serializers.CharField(required=False)
     first_name = serializers.CharField(required=False)
     birth_date = serializers.DateField(required=False)
@@ -69,7 +68,6 @@ class UserDetailSerializer(serializers.Serializer):
             "city",
             "state",
             "avatar",
-            "poster",
             "address",
             "pin_code",
             "institute",
@@ -86,7 +84,7 @@ class UserDetailSerializer(serializers.Serializer):
             user = self.context["request"].user
             value = {
                 attr: getattr(user, attr, None)
-                if (attr not in ["avatar", "poster"])
+                if (attr not in ["avatar"])
                 else getattr(user, attr, None).url
                 for attr in self.Meta.fields
             }
