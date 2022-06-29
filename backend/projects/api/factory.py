@@ -74,14 +74,13 @@ import uuid
 
 class FieldFactory:
     DATA_TYPES = {
-        "character": models.CharField,
-        "multi radio": models.JSONField,
-        # 'multi radio': models.CharField,
         "text": models.TextField,
-        "integer": models.IntegerField,
         "float": models.FloatField,
-        "boolean": models.BooleanField,
         "date": models.DateTimeField,
+        "character": models.CharField,
+        "integer": models.IntegerField,
+        "boolean": models.BooleanField,
+        "multi radio": models.JSONField,
     }
 
     def __init__(self, field_schema):
