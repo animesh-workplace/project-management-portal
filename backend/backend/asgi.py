@@ -22,24 +22,23 @@ from .token_auth import JWTAuthMiddleware
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 
-# from sequences.api.consumer import *
 
 load_dotenv(settings.BASE_DIR / ".env")
 
 application = ProtocolTypeRouter(
     {
         "http": asgi_app,
-        "websocket": AllowedHostsOriginValidator(
-            JWTAuthMiddleware(
-                URLRouter(
-                    [
-                        # re_path(os.getenv('BASE_URL'), URLRouter([
-                        # re_path(r'^wsa/backend/$', BackendConsumer.as_asgi(), name='backend-consumer'),
-                        # re_path(r'^wsa/frontend/$', FrontendConsumer.as_asgi(), name='frontend-consumer'),
-                        # ]))
-                    ]
-                )
-            )
-        ),
+        # "websocket": AllowedHostsOriginValidator(
+        #     JWTAuthMiddleware(
+        #         URLRouter(
+        #             [
+        #                 # re_path(os.getenv('BASE_URL'), URLRouter([
+        #                 # re_path(r'^wsa/backend/$', BackendConsumer.as_asgi(), name='backend-consumer'),
+        #                 # re_path(r'^wsa/frontend/$', FrontendConsumer.as_asgi(), name='frontend-consumer'),
+        #                 # ]))
+        #             ]
+        #         )
+        #     )
+        # ),
     }
 )
