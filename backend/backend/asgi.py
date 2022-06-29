@@ -2,7 +2,6 @@
 ASGI config for backend project.
 It exposes the ASGI callable as a module-level variable named ``application``.
 """
-
 import os
 from channels.routing import (
     URLRouter,
