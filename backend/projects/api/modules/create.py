@@ -2,14 +2,16 @@ from django.conf import settings
 from django.contrib import admin
 from projects.models import Projectname
 from django.urls import clear_url_caches
+from django.db.utils import IntegrityError
 from importlib import import_module, reload
 from rest_framework.response import Response
 from projects.models import ModelSchema, FieldSchema
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics, exceptions, serializers
+from authentication.api.utils import create_uniform_response
+from rest_framework import generics, exceptions, serializers, status
 
 
-class CreateSampleIdentifierSerializer(serializers.Serializer):
+class CreateSerializer(serializers.Serializer):
     name = serializers.CharField()
     config = serializers.JSONField()
 
@@ -61,10 +63,10 @@ class CreateSampleIdentifierSerializer(serializers.Serializer):
         clear_url_caches()
 
 
-class CreateSampleIdentifier(generics.GenericAPIView):
+class CreateView(generics.GenericAPIView):
     queryset = Projectname
+    serializer_class = CreateSerializer
     permission_classes = [IsAuthenticated]
-    serializer_class = CreateSampleIdentifierSerializer
 
     def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)
