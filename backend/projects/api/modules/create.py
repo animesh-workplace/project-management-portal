@@ -18,10 +18,17 @@ class CreateSerializer(serializers.Serializer):
     class Meta:
         fields = None
 
+    def validate_name(self, name):
+        qs = ModelSchema.objects
+        model_name = f"{name.lower()}_si"
+        if qs.filter(name__iexact=model_name).exists():
+            raise exceptions.ValidationError("Already exists")
+        return name
+
     def validate(self, value):
         name = value.get("name")
         config = value.get("config")
-        model_name = f"{name.lower()}_sample_identifier"
+        model_name = f"{name.lower()}_si"
         model_schema = self.create_model(model_name)
         self.create_model_fields(model_schema, config)
         Projectname.objects.create(modelname=model_name, config_file=config)
@@ -30,14 +37,15 @@ class CreateSerializer(serializers.Serializer):
 
     @staticmethod
     def create_model(model_name):
+        print(ModelSchema.objects.all().values_list("name"))
         try:
             model_schema = ModelSchema.objects.create(name=model_name)
             return model_schema
         except IntegrityError:
-            # Handle exception in a better way
             raise serializers.ValidationError(
                 {"Error": "Model already exists"}, code="natural"
             )
+        # Find any other error
 
     @staticmethod
     def create_model_fields(model_schema, config):
