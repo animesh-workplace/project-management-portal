@@ -33,7 +33,7 @@ class CreateSerializer(serializers.Serializer):
         try:
             model_schema = ModelSchema.objects.create(name=model_name)
             return model_schema
-        except Exception as e:
+        except IntegrityError:
             # Handle exception in a better way
             raise serializers.ValidationError(
                 {"Error": "Model already exists"}, code="natural"
