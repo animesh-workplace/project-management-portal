@@ -49,13 +49,13 @@ urlpatterns = [
                                     namespace="projects-api",
                                 ),
                             ),
-                            path(
-                                "modules/",
-                                include(
-                                    ("modules.api.urls", "modules_management"),
-                                    namespace="modules-api",
-                                ),
-                            ),
+                            # path(
+                            #     "modules/",
+                            #     include(
+                            #         ("modules.api.urls", "modules_management"),
+                            #         namespace="modules-api",
+                            #     ),
+                            # ),
                         ]
                     ),
                 ),
