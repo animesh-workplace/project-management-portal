@@ -1,24 +1,23 @@
-"""Various utility functions for the dynamic_projects app."""
+"""Various utility functions for the dynamic_projects app"""
 import datetime
 from django.apps import apps
+from projects.api import config
 from django.db import connection
 from django.conf import settings
 from django.core.cache import cache
 from contextlib import contextmanager
 from django.core.exceptions import FieldDoesNotExist
 
-from projects.api import config
-
 
 def db_table_exists(table_name):
-    """Checks if the table name exists in the database."""
+    """Checks if the table name exists in the database"""
     with _db_cursor() as c:
         table_names = connection.introspection.table_names(c)
         return table_name in table_names
 
 
 def db_table_has_field(table_name, field_name):
-    """Checks if the table has a given field."""
+    """Checks if the table has a given field"""
     table = _get_table_description(table_name)
     return field_name in [field.name for field in table]
 
