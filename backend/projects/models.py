@@ -1,21 +1,19 @@
+from .api import config
 from django.db import models
-from projects.api import config
 from email.policy import default
 from django.utils import timezone
 from django.utils.text import slugify
+from .api.factory import ModelFactory, FieldFactory
 from django.core.exceptions import FieldDoesNotExist
-from projects.api.factory import ModelFactory, FieldFactory
-from projects.api.utils import LastModifiedCache, ModelRegistry
-from projects.api.schema import ModelSchemaEditor, FieldSchemaEditor
-from projects.api.exceptions import NullFieldChangedError, InvalidFieldNameError
+from .api.utils import LastModifiedCache, ModelRegistry
+from .api.schema import ModelSchemaEditor, FieldSchemaEditor
+from .api.exceptions import NullFieldChangedError, InvalidFieldNameError
 
 
-class Projectname(models.Model):
-    config_file = models.JSONField()
-    modelname = models.CharField(max_length=100, primary_key=True)
-
-    def __str__(self):
-        return self.modelname
+class ProjectHandler(models.Model):
+    config = models.JSONField()
+    name = models.CharField(max_length=255)
+    table_name = models.CharField(max_length=255, primary_key=True)
 
 
 class ModelSchema(models.Model):
