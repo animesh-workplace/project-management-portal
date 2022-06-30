@@ -1,11 +1,9 @@
 from django.db import models
-from django.db import models
+from projects.api import config
 from email.policy import default
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.exceptions import FieldDoesNotExist
-
-from projects.api import config
 from projects.api.factory import ModelFactory, FieldFactory
 from projects.api.utils import LastModifiedCache, ModelRegistry
 from projects.api.schema import ModelSchemaEditor, FieldSchemaEditor
@@ -13,18 +11,17 @@ from projects.api.exceptions import NullFieldChangedError, InvalidFieldNameError
 
 
 class Projectname(models.Model):
-    modelname = models.CharField(max_length=100, primary_key=True)
     config_file = models.JSONField()
+    modelname = models.CharField(max_length=100, primary_key=True)
 
     def __str__(self):
         return self.modelname
 
 
 class ModelSchema(models.Model):
-    name = models.CharField(max_length=32, unique=True)
-    _modified = models.DateTimeField(auto_now=True)
-
     _cache = LastModifiedCache()
+    _modified = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=32, unique=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -97,19 +94,19 @@ class ModelSchema(models.Model):
 
 
 class FieldSchema(models.Model):
-    _PROHIBITED_NAMES = ("__module__", "_schema", "_declared")
     _MAX_LENGTH_DATA_TYPES = ("character",)
+    _PROHIBITED_NAMES = ("__module__", "_schema", "_declared")
 
     name = models.CharField(max_length=63)
+    null = models.BooleanField(default=False)
+    unique = models.BooleanField(default=False)
+    max_length = models.PositiveIntegerField(null=True)
     model_schema = models.ForeignKey(
         ModelSchema, on_delete=models.CASCADE, related_name="fields"
     )
     data_type = models.CharField(
         max_length=16, choices=FieldFactory.data_type_choices(), editable=False
     )
-    null = models.BooleanField(default=False)
-    unique = models.BooleanField(default=False)
-    max_length = models.PositiveIntegerField(null=True)
 
     class Meta:
         unique_together = (("name", "model_schema"),)
