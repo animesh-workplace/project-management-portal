@@ -2,7 +2,8 @@ from django.utils.text import slugify
 from rest_framework.response import Response
 from schema_management.models import ProjectHandler
 from rest_framework.permissions import IsAuthenticated
-from project_factory.api.tasks import create_project_table
+
+# from project_factory.api.tasks import create_project_table
 from authentication.api.utils import create_uniform_response
 from rest_framework import generics, exceptions, serializers, status
 
@@ -49,10 +50,11 @@ class CreateProjectSerializer(serializers.Serializer):
 
     @staticmethod
     def create_table(table_name, config):
-        if create_project_table(table_name, config):
-            return true
-        else:
-            raise exceptions.ValidationError("Some errror during creation")
+        pass
+        # if create_project_table(table_name, config):
+        #     return true
+        # else:
+        #     raise exceptions.ValidationError("Some errror during creation")
         # Calls the function for creating the project table in ProjectFactory
         # It should return true/false
         # pass
@@ -60,8 +62,8 @@ class CreateProjectSerializer(serializers.Serializer):
 
 class CreateProjectView(generics.GenericAPIView):
     queryset = ProjectHandler
-    serializer_class = CreateSerializer
     permission_classes = [IsAuthenticated]
+    serializer_class = CreateProjectSerializer
 
     def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)
