@@ -1,7 +1,7 @@
 from rest_framework.response import Response
-from schema_management.models import MetadataHandler
 from rest_framework.permissions import IsAuthenticated
 from authentication.api.utils import create_uniform_response
+from schema_management.models import MetadataHandler, ProjectHandler
 from rest_framework import generics, exceptions, serializers, status
 
 
