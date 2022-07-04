@@ -49,13 +49,6 @@ urlpatterns = [
                                     namespace="schema-management-api",
                                 ),
                             ),
-                            # path(
-                            #     "modules/",
-                            #     include(
-                            #         ("modules.api.urls", "modules_management"),
-                            #         namespace="modules-api",
-                            #     ),
-                            # ),
                         ]
                     ),
                 ),
