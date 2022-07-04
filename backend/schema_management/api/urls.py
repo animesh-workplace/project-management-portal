@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .modules.metadata import CreateMetadataView
 from .modules.project import CreateProjectView
 
