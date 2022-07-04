@@ -59,7 +59,7 @@ def receiver_is_connected(receiver_name, signal, sender):
 
 class LastModifiedCache:
     def cache_key(self, model_schema):
-        return config.cache_key_prefix() + model_schema.db_table
+        return cache_key_prefix() + model_schema.db_table
 
     def get(self, model_schema):
         """
@@ -70,7 +70,7 @@ class LastModifiedCache:
             max_date = max_date.replace(tzinfo=datetime.timezone.utc)
         return cache.get(self.cache_key(model_schema), max_date)
 
-    def set(self, model_schema, timestamp, timeout=config.cache_timeout()):
+    def set(self, model_schema, timestamp, timeout=cache_timeout()):
         cache.set(self.cache_key(model_schema), timestamp, timeout)
 
     def delete(self, model_schema):
