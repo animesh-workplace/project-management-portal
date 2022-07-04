@@ -62,7 +62,7 @@ class ModelSchema(models.Model):
 
     @property
     def app_label(self):
-        return config.dynamic_projects_app_label()
+        return dynamic_projects_app_label()
 
     @property
     def model_name(self):
@@ -165,9 +165,7 @@ class FieldSchema(models.Model):
         """
         options = {"null": self.null, "unique": self.unique}
         if self.requires_max_length():
-            options["max_length"] = (
-                self.max_length or config.default_charfield_max_length()
-            )
+            options["max_length"] = self.max_length or default_charfield_max_length()
         return options
 
     def _get_model_with_field(self):
