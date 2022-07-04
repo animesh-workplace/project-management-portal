@@ -67,8 +67,8 @@ class CreateMetadataSerializer(serializers.Serializer):
 
 class CreateMetadataView(generics.GenericAPIView):
     queryset = MetadataHandler
-    serializer_class = CreateSerializer
     permission_classes = [IsAuthenticated]
+    serializer_class = CreateMetadataSerializer
 
     def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)
