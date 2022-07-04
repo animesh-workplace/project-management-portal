@@ -43,7 +43,7 @@ class ModelFactory:
     def get_properties(self):
         return {
             **self._base_properties(),
-            **config.default_fields(),
+            **default_fields(),
             **self._custom_fields(),
         }
 
