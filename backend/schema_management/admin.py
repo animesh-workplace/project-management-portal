@@ -8,5 +8,10 @@ class ProjectHandlerAdmin(admin.ModelAdmin):
     fields = ("name", "table_name", "config")
 
 
+class MetadataHandlerAdmin(admin.ModelAdmin):
+    list_display = ("name", "project_name", "table_name")
+    fields = ("name", "project_name", "table_name", "config")
+
+
 admin.site.register(ProjectHandler, ProjectHandlerAdmin)
-admin.site.register(MetadataHandler)
+admin.site.register(MetadataHandler, MetadataHandlerAdmin)
