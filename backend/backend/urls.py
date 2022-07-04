@@ -43,10 +43,10 @@ urlpatterns = [
                                 ),
                             ),
                             path(
-                                "projects/",
+                                "schema/",
                                 include(
-                                    ("projects.api.urls", "project_management"),
-                                    namespace="projects-api",
+                                    ("schema_management.api.urls", "schema_management"),
+                                    namespace="schema-management-api",
                                 ),
                             ),
                             # path(
