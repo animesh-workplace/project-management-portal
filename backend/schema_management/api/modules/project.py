@@ -13,22 +13,43 @@ class CreateProjectSerializer(serializers.Serializer):
         fields = None
 
     def validate_name(self, name):
-        qs = ModelSchema.objects
-        # model_name = f"{name.lower()}_si"
-        # Check if the name exists in the queyset database
-        # self.context['view'].get_queryset().objects.values_list('Sample_Barcode', flat = True)
-        if qs.filter(name__iexact=model_name).exists():
+        user = self.context["request"].user
+        table_name = self.get_name("project", user, name)
+        # Check if the name exists in the queryset database
+        if (
+            self.context["view"]
+            .get_queryset()
+            .objects.filter(table_name__iexact=table_name)
+            .exists()
+        ):
             raise exceptions.ValidationError("Already exists")
         return name
 
     def validate(self, value):
         name = value.get("name")
         config = value.get("config")
-        model_name = f"{name.lower()}_si"
-        model_schema = self.create_model(model_name)
-        ProjectHandler.objects.create(name=model_name, config=config)
-        self.register_model(model_schema)
+        user = self.context["request"].user
+        table_name = self.get_name("project", user, name)
+        if self.create_table(table_name):
+            self.context["view"].get_queryset().objects.create(
+                name=name, config=config, table_name=table_name
+            )
+        # Incase of false handle the response
         return value
+
+    @staticmethod
+    def get_name(table_type, user, project, metadata=None):
+        if table_type == "project":
+            return f"{user}_{project.lower().replace(' ', '_')}_si"
+        if table_type == "metadata":
+            return f"{user}_{project.lower().replace(' ', '_')}_{metadata.lower().replace(' ', '_')}_metadata"
+        raise exceptions.ValidationError("Invalid Type: Get name -> Metadata")
+
+    @staticmethod
+    def create_table(model_name):
+        # Calls the function for creating the project table in ProjectFactory
+        # It should return true/false
+        pass
 
 
 class CreateProjectView(generics.GenericAPIView):
