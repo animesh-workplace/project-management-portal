@@ -55,7 +55,7 @@ class CreateMetadataSerializer(serializers.Serializer):
         if table_type == "project":
             return f"{user}_{slugify(project).replace('-', '_')}_si"
         if table_type == "metadata":
-            return f"{user}_{slugify(project)..replace('-', '_')}_{slugify(metadata).replace('-', '_')}_metadata"
+            return f"{user}_{slugify(project).replace('-', '_')}_{slugify(metadata).replace('-', '_')}_metadata"
         raise exceptions.ValidationError("Invalid Type: Get name -> Metadata")
 
     @staticmethod
