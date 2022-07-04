@@ -1,5 +1,5 @@
 from django.urls import path
-from .modules.module import CreateMetadataView
+from .modules.metadata import CreateMetadataView
 from .modules.project import CreateProjectView
 
 urlpatterns = [
