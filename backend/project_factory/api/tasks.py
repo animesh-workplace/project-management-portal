@@ -31,8 +31,10 @@ def create_project_table(table_name, config):
             else item["datatype"],
         )
 
-    # Registering model
+    # Registering model as a prt of Admin panel
     model = model_schema.as_model()
     admin.site.register(model)
+    # Reloading URL path
     reload(import_module(settings.ROOT_URLCONF))
+    # Clear the URL cache
     clear_url_caches()
