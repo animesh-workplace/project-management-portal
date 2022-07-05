@@ -1,5 +1,8 @@
+from django.utils.text import slugify
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from project_factory.api.tasks import create_metadata_table
+
 from authentication.api.utils import create_uniform_response
 from schema_management.models import MetadataHandler, ProjectHandler
 from rest_framework import generics, exceptions, serializers, status
@@ -89,7 +92,7 @@ class CreateMetadataView(generics.GenericAPIView):
     def get_response(self):
         data = {
             "code": "SUCCESS",
-            "message": "Project creation Successful",
+            "message": "Metadata creation Successful",
         }
         response = Response(data, status=status.HTTP_200_OK)
         return response
