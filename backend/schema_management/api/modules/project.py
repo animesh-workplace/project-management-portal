@@ -32,11 +32,10 @@ class CreateProjectSerializer(serializers.Serializer):
         config = value.get("config")
         user = self.context["request"].user
         table_name = self.get_name("project", user, name)
-        if self.create_table(table_name, config):
-            self.context["view"].get_queryset().objects.create(
-                name=name, config=config, table_name=table_name
-            )
-        # Incase of false handle the response
+        self.create_table(table_name, config)
+        self.context["view"].get_queryset().objects.create(
+            name=name, config=config, table_name=table_name
+        )
         return value
 
     @staticmethod

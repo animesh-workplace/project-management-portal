@@ -43,14 +43,13 @@ class CreateMetadataSerializer(serializers.Serializer):
         if self.check_name(user, project, name):
             table_name = self.get_name("metadata", user, project, name)
             project_instance = self.get_project(self.get_name("project", user, project))
-            if self.create_table(table_name, config):
-                self.context["view"].get_queryset().objects.create(
-                    name=name,
-                    config=config,
-                    table_name=table_name,
-                    project_name=project_instance,
-                )
-            # Incase of false handle the response
+            self.create_table(table_name, config)
+            self.context["view"].get_queryset().objects.create(
+                name=name,
+                config=config,
+                table_name=table_name,
+                project_name=project_instance,
+            )
             return value
 
     @staticmethod
