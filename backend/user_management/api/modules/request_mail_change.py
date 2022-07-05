@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.db import IntegrityError
 from ..utils import create_uniform_response
-from authentication.models import MailToken
+from user_management.models import MailToken
 from rest_framework.response import Response
 from ..tasks import send_email_mail_change_request
 from rest_framework.permissions import IsAuthenticated

@@ -3,7 +3,7 @@ from django.db.models import Q
 from dotenv import load_dotenv
 from django.conf import settings
 from django.db import IntegrityError
-from authentication.models import MailToken
+from user_management.models import MailToken
 from rest_framework.response import Response
 from ..tasks import send_email_reset_password
 from django.contrib.auth import get_user_model

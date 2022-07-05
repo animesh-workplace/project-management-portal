@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from django.conf import settings
 from ..tasks import send_email_activate
-from authentication.models import MailToken
+from user_management.models import MailToken
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
