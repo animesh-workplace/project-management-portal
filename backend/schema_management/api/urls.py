@@ -1,6 +1,6 @@
 from django.urls import path, include
-from .modules.project import CreateProjectView
-from .modules.metadata import CreateMetadataView
+from .modules.create_project import CreateProjectView
+from .modules.create_metadata import CreateMetadataView
 
 urlpatterns = [
     path(
