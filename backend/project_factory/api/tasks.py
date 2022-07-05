@@ -9,13 +9,7 @@ from project_factory.models import ModelSchema, FieldSchema
 
 def create_project_table(table_name, config):
     # Creating the empty table
-    try:
-        model_schema = ModelSchema.objects.create(name=table_name)
-        return model_schema
-    except IntegrityError:
-        raise serializers.ValidationError(
-            {"Error": "Model already exists"}, code="natural"
-        )
+    model_schema = ModelSchema.objects.create(name=table_name)
 
     # Creating fields in the model_schema
     for item in config:
