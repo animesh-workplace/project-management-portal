@@ -19,8 +19,7 @@ class DataSerializer(serializers.Serializer):
 
 
 class CreateModels(generics.CreateAPIView):
-    permission_classes = (AllowAny,)
-    authentication_classes = ()
+    permission_classes = [IsAuthenticated]
     serializer_class = DataSerializer
 
     def post(self, request, *args, **kwargs):
@@ -32,9 +31,11 @@ class CreateModels(generics.CreateAPIView):
         projectName = serializer.validated_data["projectname"]
         projectName = projectName.lower()
         model_data = serializer.validated_data["model_data"]
+        username = self.request.user.username
+        print(username)
         try:
             model_schema = ModelSchema.objects.create(
-                name=projectName + "_" + "sample_identifier"
+                name=username + "_" + projectName + "_" + "sample_identifier"
             )
             modelCreated = True
         except Exception as e:
@@ -66,7 +67,8 @@ class CreateModels(generics.CreateAPIView):
                     unique=row["unique"],
                 )
         Projectname.objects.create(
-            modelname=projectName + "_" + "sample_identifier", config_file=model_data
+            modelname=username + "_" + projectName + "_" + "sample_identifier",
+            config_file=model_data,
         )
         reg_model = model_schema.as_model()
         admin.site.register(reg_model)
