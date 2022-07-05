@@ -1,8 +1,11 @@
+import uuid
 from django.db import models
-from projects.api import config
+from .utils import ModelRegistry
 from django.utils import timezone
-from projects.api.utils import ModelRegistry
-from projects.api.exceptions import OutdatedModelError
+from .config import default_fields
+
+# Might be removed
+from .exceptions import OutdatedModelError
 
 
 class ModelFactory:
@@ -40,7 +43,7 @@ class ModelFactory:
     def get_properties(self):
         return {
             **self._base_properties(),
-            **config.default_fields(),
+            **default_fields(),
             **self._custom_fields(),
         }
 
@@ -68,9 +71,6 @@ class ModelFactory:
         return Meta
 
 
-import uuid
-
-
 class FieldFactory:
     DATA_TYPES = {
         "text": models.TextField,
@@ -79,7 +79,7 @@ class FieldFactory:
         "character": models.CharField,
         "integer": models.IntegerField,
         "boolean": models.BooleanField,
-        "multi radio": models.JSONField,
+        "multiradio": models.JSONField,
     }
 
     def __init__(self, field_schema):
@@ -91,7 +91,6 @@ class FieldFactory:
         return constructor(**options)
 
     def get_constructor(self):
-        # print(dir(self.DATA_TYPES[self.schema]))
         return self.DATA_TYPES[self.schema.data_type]
 
     @classmethod
@@ -103,7 +102,7 @@ class FieldFactory:
         return cls.DATA_TYPES
 
 
-def check_model_schema(sender, instance, **kwargs):  # pylint: disable=unused-argument
+def check_model_schema(sender, instance, **kwargs):
     """
     Check that the schema being used is the most up-to-date.
 

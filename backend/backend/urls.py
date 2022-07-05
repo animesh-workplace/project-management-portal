@@ -42,20 +42,13 @@ urlpatterns = [
                                     namespace="user-api",
                                 ),
                             ),
-                            # path(
-                            #     "projects/",
-                            #     include(
-                            #         ("projects.api.urls", "project_management"),
-                            #         namespace="projects-api",
-                            #     ),
-                            # ),
-                            # path(
-                            #     "modules/",
-                            #     include(
-                            #         ("modules.api.urls", "modules_management"),
-                            #         namespace="modules-api",
-                            #     ),
-                            # ),
+                            path(
+                                "schema/",
+                                include(
+                                    ("schema_management.api.urls", "schema_management"),
+                                    namespace="schema-management-api",
+                                ),
+                            ),
                         ]
                     ),
                 ),

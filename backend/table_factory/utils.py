@@ -1,23 +1,29 @@
-"""Various utility functions for the dynamic_projects app"""
+"""
+    Various utility functions for the dynamic_projects app
+"""
 import datetime
 from django.apps import apps
-from projects.api import config
 from django.db import connection
 from django.conf import settings
 from django.core.cache import cache
 from contextlib import contextmanager
+from .config import cache_key_prefix, cache_timeout
 from django.core.exceptions import FieldDoesNotExist
 
 
 def db_table_exists(table_name):
-    """Checks if the table name exists in the database"""
+    """
+    Checks if the table name exists in the database
+    """
     with _db_cursor() as c:
         table_names = connection.introspection.table_names(c)
         return table_name in table_names
 
 
 def db_table_has_field(table_name, field_name):
-    """Checks if the table has a given field"""
+    """
+    Checks if the table has a given field
+    """
     table = _get_table_description(table_name)
     return field_name in [field.name for field in table]
 
@@ -37,7 +43,9 @@ def _get_table_description(table_name):
 
 @contextmanager
 def _db_cursor():
-    """Create a database cursor and close it on exit."""
+    """
+    Create a database cursor and close it on exit
+    """
     cursor = connection.cursor()
     yield cursor
     cursor.close()
@@ -51,16 +59,18 @@ def receiver_is_connected(receiver_name, signal, sender):
 
 class LastModifiedCache:
     def cache_key(self, model_schema):
-        return config.cache_key_prefix() + model_schema.db_table
+        return cache_key_prefix() + model_schema.db_table
 
     def get(self, model_schema):
-        """Return the last time of modification or the max date value."""
+        """
+        Return the last time of modification or the max date value
+        """
         max_date = datetime.datetime.max
         if settings.USE_TZ:
             max_date = max_date.replace(tzinfo=datetime.timezone.utc)
         return cache.get(self.cache_key(model_schema), max_date)
 
-    def set(self, model_schema, timestamp, timeout=config.cache_timeout()):
+    def set(self, model_schema, timestamp, timeout=cache_timeout()):
         cache.set(self.cache_key(model_schema), timestamp, timeout)
 
     def delete(self, model_schema):

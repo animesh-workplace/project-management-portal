@@ -1,22 +1,16 @@
-from .api import config
 from django.db import models
-from email.policy import default
 from django.utils import timezone
 from django.utils.text import slugify
-from .api.factory import ModelFactory, FieldFactory
+from .factory import ModelFactory, FieldFactory
+from .utils import LastModifiedCache, ModelRegistry
 from django.core.exceptions import FieldDoesNotExist
-from .api.utils import LastModifiedCache, ModelRegistry
-from .api.schema import ModelSchemaEditor, FieldSchemaEditor
-from .api.exceptions import NullFieldChangedError, InvalidFieldNameError
+from .schema import ModelSchemaEditor, FieldSchemaEditor
+from .config import app_label, default_charfield_max_length
+from .exceptions import NullFieldChangedError, InvalidFieldNameError
 
 
-class ProjectHandler(models.Model):
-    config = models.JSONField()
-    name = models.CharField(max_length=255)
-    table_name = models.CharField(max_length=255, primary_key=True)
-
-
-class ModelSchema(models.Model):
+# Create your models here
+class TableSchema(models.Model):
     _cache = LastModifiedCache()
     _modified = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=32, unique=True)
@@ -68,7 +62,7 @@ class ModelSchema(models.Model):
 
     @property
     def app_label(self):
-        return config.dynamic_projects_app_label()
+        return app_label()
 
     @property
     def model_name(self):
@@ -95,15 +89,15 @@ class FieldSchema(models.Model):
     _MAX_LENGTH_DATA_TYPES = ("character",)
     _PROHIBITED_NAMES = ("__module__", "_schema", "_declared")
 
-    name = models.CharField(max_length=63)
+    name = models.CharField(max_length=100)
     null = models.BooleanField(default=False)
     unique = models.BooleanField(default=False)
     max_length = models.PositiveIntegerField(null=True)
     model_schema = models.ForeignKey(
-        ModelSchema, on_delete=models.CASCADE, related_name="fields"
+        TableSchema, on_delete=models.CASCADE, related_name="fields"
     )
     data_type = models.CharField(
-        max_length=16, choices=FieldFactory.data_type_choices(), editable=False
+        max_length=10, choices=FieldFactory.data_type_choices(), editable=False
     )
 
     class Meta:
@@ -171,9 +165,7 @@ class FieldSchema(models.Model):
         """
         options = {"null": self.null, "unique": self.unique}
         if self.requires_max_length():
-            options["max_length"] = (
-                self.max_length or config.default_charfield_max_length()
-            )
+            options["max_length"] = self.max_length or default_charfield_max_length()
         return options
 
     def _get_model_with_field(self):
