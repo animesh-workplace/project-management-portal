@@ -40,15 +40,20 @@ class CreateMetadataSerializer(serializers.Serializer):
         user = self.context["request"].user
         if self.check_name(user, project, name):
             table_name = self.get_name("metadata", user, project, name)
-            if self.create_table(table_name):
+            project_instance = self.get_project(self.get_name("project", user, project))
+            if self.create_table(table_name, config):
                 self.context["view"].get_queryset().objects.create(
                     name=name,
                     config=config,
-                    project_name=project,
                     table_name=table_name,
+                    project_name=project_instance,
                 )
             # Incase of false handle the response
             return value
+
+    @staticmethod
+    def get_project(project_name):
+        return ProjectHandler.objects.get(table_name__iexact=project_name)
 
     @staticmethod
     def get_name(table_type, user, project, metadata=None):
@@ -59,10 +64,12 @@ class CreateMetadataSerializer(serializers.Serializer):
         raise exceptions.ValidationError("Invalid Type: Get name -> Metadata")
 
     @staticmethod
-    def create_table(model_name):
+    def create_table(table_name, config):
+        create_metadata_table(table_name, config)
+        return True
         # Calls the function for creating the project table in MetadataFactory
         # It should return true/false
-        pass
+        # pass
 
 
 class CreateMetadataView(generics.GenericAPIView):
