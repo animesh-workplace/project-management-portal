@@ -45,21 +45,24 @@ class CreateProjectsdata(generics.CreateAPIView):
         modelname = serializer.validated_data["modelname"]
         data = serializer.validated_data["data"]
         app_model = app_models.models[modelname.lower()]
-        config_data = Projectname.objects.filter(modelname=modelname).values_list(
-            "config_file", flat=True
-        )
+        config_data = list(
+            Projectname.objects.filter(modelname=modelname).values_list(
+                "config_file", flat=True
+            )
+        )[0]
         print(config_data)
         # Getting config file
         config_file = []
-        for i in config_data:
-            config_file = i
+        # for i in config_data:
+        #     config_file = i
+        print(config_file, "helloworld")
         # Pushing backend names of cilumns into list
         colmns = []
-        for i in config_file:
+        for i in config_data:
             colmns.append(i["field"])
         checks_matching = True
         for row in data:
-            for i in config_file:
+            for i in config_data:
                 if not i["field"] in row:
                     checks_matching = False
                     return Response(
