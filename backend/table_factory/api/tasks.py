@@ -30,3 +30,9 @@ def CreateTable(table_name, config):
     reload(import_module(settings.ROOT_URLCONF))
     # Clear the URL cache
     clear_url_caches()
+
+
+def UploadProjectData(project_name, data, app_model):
+    obj_list = [app_model(**data_dict) for data_dict in data]
+    app_model.objects.bulk_create(obj_list)
+    # return Response({"message": "Data uploaded successfully"})
