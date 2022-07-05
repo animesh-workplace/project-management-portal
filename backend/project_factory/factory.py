@@ -91,7 +91,6 @@ class FieldFactory:
         return constructor(**options)
 
     def get_constructor(self):
-        # print(dir(self.DATA_TYPES[self.schema]))
         return self.DATA_TYPES[self.schema.data_type]
 
     @classmethod
