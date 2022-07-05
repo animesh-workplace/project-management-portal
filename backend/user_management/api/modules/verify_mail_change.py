@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import IntegrityError
 from ..tasks import send_email_accept_mail
 from ..utils import create_uniform_response
-from authentication.models import MailToken
+from user_management.models import MailToken
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import serializers, status, generics

@@ -38,7 +38,7 @@ urlpatterns = [
                             path(
                                 "user/",
                                 include(
-                                    ("authentication.api.urls", "user_management"),
+                                    ("user_management.api.urls", "user_management"),
                                     namespace="user-api",
                                 ),
                             ),

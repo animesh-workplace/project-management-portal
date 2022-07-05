@@ -34,7 +34,7 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
 ]
 
-LOCAL_APPS = ["authentication", "schema_management", "table_factory"]
+LOCAL_APPS = ["user_management", "schema_management", "table_factory"]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -122,12 +122,12 @@ MEDIA_URL = f"{os.getenv('BASE_URL')}media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Authentication user model
-AUTH_USER_MODEL = "authentication.user"
+AUTH_USER_MODEL = "user_management.user"
 
 # REST Framework default authentication and exception handler
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "authentication.api.jwt_auth.JWTCookieAuthentication",
+        "user_management.api.jwt_auth.JWTCookieAuthentication",
     ],
     # 'EXCEPTION_HANDLER': 'authentication.api.utils.custom_exception_handler'
 }

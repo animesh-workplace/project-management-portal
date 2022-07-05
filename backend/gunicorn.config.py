@@ -8,5 +8,6 @@ worker_class = "uvicorn.workers.UvicornWorker"
 max_requests = 1
 
 
+
 def on_starting(server):
     print(f"Project version: {__version__}")
