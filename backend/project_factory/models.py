@@ -2,8 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from .factory import ModelFactory, FieldFactory
-from django.core.exceptions import FieldDoesNotExist
 from .utils import LastModifiedCache, ModelRegistry
+from django.core.exceptions import FieldDoesNotExist
 from .schema import ModelSchemaEditor, FieldSchemaEditor
 from .exceptions import NullFieldChangedError, InvalidFieldNameError
 from .config import dynamic_projects_app_label, default_charfield_max_length
@@ -89,7 +89,7 @@ class FieldSchema(models.Model):
     _MAX_LENGTH_DATA_TYPES = ("character",)
     _PROHIBITED_NAMES = ("__module__", "_schema", "_declared")
 
-    name = models.CharField(max_length=63)
+    name = models.CharField(max_length=100)
     null = models.BooleanField(default=False)
     unique = models.BooleanField(default=False)
     max_length = models.PositiveIntegerField(null=True)
@@ -97,7 +97,7 @@ class FieldSchema(models.Model):
         ModelSchema, on_delete=models.CASCADE, related_name="fields"
     )
     data_type = models.CharField(
-        max_length=16, choices=FieldFactory.data_type_choices(), editable=False
+        max_length=10, choices=FieldFactory.data_type_choices(), editable=False
     )
 
     class Meta:
