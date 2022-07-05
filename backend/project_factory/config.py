@@ -1,9 +1,13 @@
 from django.conf import settings
-from .apps import ProjectFactoryConfig
+from .apps import ProjectFactoryConfig, MetadataFactoryConfig
 
 
-def dynamic_projects_app_label():
+def project_app_label():
     return _settings().get("USE_APP_LABEL", ProjectFactoryConfig.name)
+
+
+def metadata_app_label():
+    return _settings().get("USE_APP_LABEL", MetadataFactoryConfig.name)
 
 
 def default_fields():
