@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from table_factory.api.tasks import CreateTable
 from schema_management.models import ProjectHandler
 from rest_framework.permissions import IsAuthenticated
-from authentication.api.utils import create_uniform_response
+from user_management.api.utils import create_uniform_response
 from rest_framework import generics, exceptions, serializers, status
 
 
