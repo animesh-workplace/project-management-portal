@@ -34,7 +34,12 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
 ]
 
-LOCAL_APPS = ["authentication", "schema_management"]
+LOCAL_APPS = [
+    "authentication",
+    "schema_management",
+    "project_factory.apps.ProjectFactoryConfig",
+    "project_factory.apps.MetadataFactoryConfig",
+]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
