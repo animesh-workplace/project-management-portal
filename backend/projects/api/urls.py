@@ -16,8 +16,3 @@ urlpatterns = [
     ),
     # path("createmoduledata/", CreateModuledata.as_view(), name="createmoduledata"),
 ]
-
-
-# Postdata,
-# GetModuledata,
-# CreateModuledata,
