@@ -21,8 +21,7 @@ class ModuleSerializer(serializers.Serializer):
 
 
 class CreateModules(generics.CreateAPIView):
-    permission_classes = (AllowAny,)
-    authentication_classes = ()
+    permission_classes = [IsAuthenticated]
     serializer_class = ModuleSerializer
 
     def post(
@@ -36,11 +35,18 @@ class CreateModules(generics.CreateAPIView):
         moduleName = ""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        username = self.request.user.username
         projectName = serializer.validated_data["projectname"]
         projectName = projectName.lower()
-        projectTablename = projectName + "_" + "sample_identifier"
+        projectTablename = username + "_" + projectName + "_" + "sample_identifier"
         moduleName = (
-            projectName + "_" + serializer.validated_data["modulename"] + "_" + "module"
+            username
+            + "_"
+            + projectName
+            + "_"
+            + serializer.validated_data["modulename"]
+            + "_"
+            + "module"
         )
         moduleName = moduleName.lower()
         module_data = serializer.validated_data["module_data"]
