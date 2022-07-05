@@ -1,7 +1,7 @@
 from django.utils.text import slugify
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from project_factory.api.tasks import create_metadata_table
+from table_factory.api.tasks import create_dynamic_table
 
 from authentication.api.utils import create_uniform_response
 from schema_management.models import MetadataHandler, ProjectHandler
@@ -68,7 +68,7 @@ class CreateMetadataSerializer(serializers.Serializer):
 
     @staticmethod
     def create_table(table_name, config):
-        create_metadata_table(table_name, config)
+        create_dynamic_table(table_name, config)
         return True
         # Calls the function for creating the project table in MetadataFactory
         # It should return true/false

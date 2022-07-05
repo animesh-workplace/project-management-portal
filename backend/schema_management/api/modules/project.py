@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from schema_management.models import ProjectHandler
 from rest_framework.permissions import IsAuthenticated
 
-from project_factory.api.tasks import create_project_table
+from table_factory.api.tasks import create_dynamic_table
 from authentication.api.utils import create_uniform_response
 from rest_framework import generics, exceptions, serializers, status
 
@@ -50,7 +50,7 @@ class CreateProjectSerializer(serializers.Serializer):
 
     @staticmethod
     def create_table(table_name, config):
-        create_project_table(table_name, config)
+        create_dynamic_table(table_name, config)
         return True
         # if create_project_table(table_name, config):
         # return true
