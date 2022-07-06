@@ -1,8 +1,8 @@
 from django.apps import apps
-from schema_management.models import ProjectHandler, MetadataHandler
 from rest_framework.response import Response
+from table_factory.api.tasks import UploadData
 from rest_framework import generics, serializers
-from table_factory.api.tasks import UploadProjectData
+from schema_management.models import MetadataHandler
 from rest_framework.permissions import IsAuthenticated
 from user_management.api.utils import create_uniform_response
 from rest_framework import generics, exceptions, serializers, status
@@ -65,7 +65,7 @@ class UploadMetadataSerializer(serializers.Serializer):
 
     @staticmethod
     def create_table(name, data, app_model):
-        UploadProjectData(name, data, app_model)
+        UploadData(name, data, app_model)
 
 
 class UploadMetadataView(generics.CreateAPIView):
