@@ -164,7 +164,7 @@ class FieldSchema(models.Model):
         """
         Get a dictionary of kwargs to be passed to the Django field constructor
         """
-        options = {"null": self.null, "unique": self.unique, "blank": self.required}
+        options = {"null": self.null, "unique": self.unique, "blank": not self.required}
         if self.requires_max_length():
             options["max_length"] = self.max_length or default_charfield_max_length()
         return options
