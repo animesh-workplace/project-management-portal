@@ -27,6 +27,29 @@ class CreateProjectSerializer(serializers.Serializer):
             raise exceptions.ValidationError("Already exists")
         return name
 
+    def validate_config(self, config):
+        column_structure = {
+            "null",
+            "bname",
+            "fname",
+            "unique",
+            "default",
+            "required",
+            "data_type",
+            "max_length",
+        }
+        for index, row in enumerate(config):
+            if not column_structure.issubset(set(row.keys())):
+                raise exceptions.ValidationError(
+                    f"Config row index {index} requires column {list(column_structure - set(row.keys()))}"
+                )
+            if row["data_type"] == "radio" or row["data_type"] == "multiradio":
+                if not "options" in row.keys():
+                    raise exceptions.ValidationError(
+                        f"Column {row['fname']} which is {row['data_type']} needs options field"
+                    )
+        return config
+
     def validate(self, value):
         name = value.get("name")
         config = value.get("config")
