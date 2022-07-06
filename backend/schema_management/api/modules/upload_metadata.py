@@ -13,7 +13,7 @@ class UploadMetadataSerializer(serializers.Serializer):
     name = serializers.CharField()
 
     class Meta:
-        names = None
+        fields = None
 
     def validate(self, value):
         modelname = value.get("name")
