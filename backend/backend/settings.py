@@ -31,6 +31,7 @@ THIRD_PARTY_APPS = [
     "channels",
     "corsheaders",
     "rest_framework",
+    "multiselectfield",
     "rest_framework_simplejwt",
 ]
 
