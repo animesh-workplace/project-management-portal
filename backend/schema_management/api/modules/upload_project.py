@@ -1,10 +1,12 @@
+import itertools
+from .utils import get_name
 from django.apps import apps
-from schema_management.models import ProjectHandler, MetadataHandler
 from rest_framework.response import Response
 from rest_framework import generics, serializers
 from table_factory.api.tasks import UploadProjectData
 from rest_framework.permissions import IsAuthenticated
 from user_management.api.utils import create_uniform_response
+from schema_management.models import ProjectHandler, MetadataHandler
 from rest_framework import generics, exceptions, serializers, status
 
 
@@ -13,67 +15,73 @@ class UploadProjectSerializer(serializers.Serializer):
     name = serializers.CharField()
 
     class Meta:
-        names = None
+        fields = None
+
+    def validate_name(self, name):
+        user = self.context["request"].user
+        table_name = get_name("project", user, name)
+        # Check if the name exists in the queryset database
+        if ProjectHandler.objects.filter(table_name__iexact=table_name).exists():
+            return name
+        raise exceptions.ValidationError("Table doesn't exists")
 
     def validate(self, value):
-        modelname = value.get("name")
+        name = value.get("name")
         data = value.get("data")
-        # app_model = app_models.models[modelname.lower()]
-        app_model = self.context["view"].get_queryset()[modelname.lower()]
-        config_data = list(
-            ProjectHandler.objects.filter(table_name=modelname).values_list(
-                "config", flat=True
-            )
-        )[0]
-        colmns = []
-        for i in config_data:
-            colmns.append(i["name"])
-        checks_matching = True
-        for row in data:
-            for i in config_data:
-                if not i["name"] in row:
-                    checks_matching = False
-                    raise exceptions.ValidationError(
-                        f"{app_model} requires column {i['name']}"
-                    )
-                for col in row.keys():
-                    if not col in colmns:
-                        checks_matching = False
-                        raise exceptions.ValidationError(
-                            f"{app_model} doesn't have column {col}"
-                        )
-                if i["unique"] == True:
-                    l = list(app_model.objects.values_list(i["name"], flat=True))
-                    if row[i["name"]] in l:
-                        checks_matching = False
-                        raise exceptions.ValidationError(f"{i['name']} is exists")
-                if "options" in i and i["data_type"] == "radio":
-                    if not row[i["name"]] in i["options"]:
-                        checks_matching = False
-                        raise exceptions.ValidationError(
-                            f"Select {i['name']} from any one of {i['options']} only. Eg. '{i['name']}': '{i['options'][0]}'"
-                        )
-                if "options" in i and i["data_type"] == "multiradio":
-                    for j in row[i["name"]]:
-                        if not j in i["options"]:
-                            checks_matching = False
-                            raise exceptions.ValidationError(
-                                f"Select {i['name']} from choices of {i['options']} only. Eg. '{i['name']}': {i['options'][0:2]}"
-                            )
-        if checks_matching == True:
-            # app_model = app_models.models[modelname.lower()]
-            self.upload_table(modelname, data, app_model)
-            return value
+        user = self.context["request"].user
+        table_name = get_name("project", user, name)
+        instance = self.context["view"].get_queryset()[table_name]
+        project_config = (
+            ProjectHandler.objects.filter(table_name=table_name)
+            .values_list("config", flat=True)
+            .first()
+        )
+        # Need to add required column in the config
+        # required_columns = {col["name"] for col in project_config if (col["required"])}
+        # self.check_required_columns(required_columns, data)
+        self.check_radio_options("radio", project_config, data)
+        self.check_radio_options("multiradio", project_config, data)
+        self.upload_table(table_name, data, instance)
+        return value
 
     @staticmethod
-    def upload_table(name, data, app_model):
-        UploadProjectData(name, data, app_model)
+    def check_required_columns(columns, data):
+        # If there are no required columns get return back
+        if not columns:
+            return
+        for (index, row) in enumerate(data):
+            # Check whether the required columns are subset of the columns in the data
+            if not columns.issubset(set(row.keys())):
+                raise exceptions.ValidationError(
+                    f"Row index {index} requires column {columns - set(row.keys())}"
+                )
+
+    @staticmethod
+    def check_radio_options(radiotype, config, data):
+        for row in config:
+            if row["data_type"] == "radio" or row["data_type"] == "multiradio":
+                if radiotype == "radio":
+                    # If radio then only one option
+                    data_choices = {i[row["name"]] for i in data}
+                elif radiotype == "multiradio":
+                    # If multiradio then we get list of list
+                    temp = [i[row["name"]] for i in data]
+                    data_choices = set(itertools.chain(*temp))
+                # Checking if the unique options from the data is a subset of the options in the config
+                if not data_choices.issubset(set(row["options"])):
+                    raise exceptions.ValidationError(
+                        f"{row['name']} doesnot have valid option {data_choices - set(row['options'])}"
+                    )
+
+    @staticmethod
+    def upload_table(name, data, instance):
+        UploadProjectData(name, data, instance)
 
 
-class UploadProjectView(generics.CreateAPIView):
-    queryset = apps.get_app_config("table_factory").models
-    serializer_class = UploadProjectSerializer
+class UploadProjectView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = UploadProjectSerializer
+    queryset = apps.get_app_config("table_factory").models
 
     def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)
