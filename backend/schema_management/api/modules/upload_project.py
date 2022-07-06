@@ -37,8 +37,8 @@ class UploadProjectSerializer(serializers.Serializer):
             .first()
         )
         # Need to add required column in the config
-        # required_columns = {col["name"] for col in project_config if (col["required"])}
-        # self.check_required_columns(required_columns, data)
+        required_columns = {col["name"] for col in project_config if (col["required"])}
+        self.check_required_columns(required_columns, data)
         self.check_radio_options("radio", project_config, data)
         self.check_radio_options("multiradio", project_config, data)
         self.upload_table(table_name, data, instance)
