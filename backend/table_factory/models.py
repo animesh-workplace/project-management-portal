@@ -166,15 +166,17 @@ class FieldSchema(models.Model):
         Get a dictionary of kwargs to be passed to the Django field constructor
         """
         options = {"null": self.null, "unique": self.unique, "blank": not self.required}
-        print(self.data_type, self.options)
         if self.requires_max_length():
             options["max_length"] = self.max_length or default_charfield_max_length()
         if self.data_type == "radio" or self.data_type == "multiradio":
+            if self.data_type == "radio":
+                options["max_length"] = 1
+            options["null"] = True
+            options["blank"] = True
             user_choices = [i["title"] for i in self.options]
             options["choices"] = tuple(
-                ((index, value) for index, value in enumerate(user_choices))
+                ((str(index), value) for index, value in enumerate(user_choices))
             )
-            options["max_length"] = 1
         return options
 
     def _get_model_with_field(self):
