@@ -15,14 +15,13 @@ def CreateTable(table_name, config):
         # Might require a try and catch block
         FieldSchema.objects.create(
             null=item["null"],
-            name=item["name"],
+            name=item["bname"],
             unique=item["unique"],
             required=item["required"],
             model_schema=model_schema,
+            data_type=item["data_type"],
             max_length=item["max_length"],
-            data_type="character"
-            if (item["data_type"] == "radio")
-            else item["data_type"],
+            options=item["options"] if ("options" in item.keys()) else None,
         )
     # Registering model as a prt of Admin panel
     model = model_schema.as_model()
