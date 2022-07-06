@@ -53,7 +53,7 @@ class UploadProjectSerializer(serializers.Serializer):
             # Check whether the required columns are subset of the columns in the data
             if not columns.issubset(set(row.keys())):
                 raise exceptions.ValidationError(
-                    f"Row index {index} requires column {columns - set(row.keys())}"
+                    f"Row index {index} requires column {list(columns - set(row.keys()))}"
                 )
 
     @staticmethod
@@ -70,7 +70,7 @@ class UploadProjectSerializer(serializers.Serializer):
                 # Checking if the unique options from the data is a subset of the options in the config
                 if not data_choices.issubset(set(row["options"])):
                     raise exceptions.ValidationError(
-                        f"{row['name']} doesnot have valid option {data_choices - set(row['options'])}"
+                        f"{row['name']} doesnot have valid option {list(data_choices - set(row['options']))}"
                     )
 
     @staticmethod
