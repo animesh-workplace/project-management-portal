@@ -80,6 +80,7 @@ class FieldFactory:
         "integer": models.IntegerField,
         "boolean": models.BooleanField,
         "multiradio": models.JSONField,
+        "onetoonefield": models.OneToOneField,
     }
 
     def __init__(self, field_schema):
