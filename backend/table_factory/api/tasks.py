@@ -17,8 +17,9 @@ def CreateTable(table_name, config):
             null=item["null"],
             name=item["name"],
             unique=item["unique"],
-            max_length=item["max_length"],
+            required=item["required"],
             model_schema=model_schema,
+            max_length=item["max_length"],
             data_type="character"
             if (item["data_type"] == "radio")
             else item["data_type"],
