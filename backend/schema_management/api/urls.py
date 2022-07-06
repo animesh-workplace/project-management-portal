@@ -9,6 +9,8 @@ from .modules.update_project import UpdateProjectView
 from .modules.upload_metadata import UploadMetadataView
 from .modules.create_metadata import CreateMetadataView
 from .modules.update_metadata import UpdateMetadataView
+from .modules.remove_project_info import DeleteProjectView
+from .modules.delete_metadata import DeleteMeatadataView
 
 # from schema_management.api.modules.upload_project_data
 
@@ -28,6 +30,9 @@ urlpatterns = [
                 ),
                 path("info/", MetadataDetailView.as_view(), name="metadata-info-api"),
                 path("names/", MetadataNamesView.as_view(), name="metadata-names-api"),
+                path(
+                    "delete/", DeleteMeatadataView.as_view(), name="delete-metadata-api"
+                ),
             ]
         ),
     ),
@@ -40,6 +45,9 @@ urlpatterns = [
                 path("update/", UpdateProjectView.as_view(), name="update-project-api"),
                 path("info/", ProjectDetailView.as_view(), name="project-info-api"),
                 path("names/", ProjectNamesView.as_view(), name="project-names-api"),
+                path(
+                    "delete/", DeleteProjectView.as_view(), name="delete-metadata-api"
+                ),
             ]
         ),
     ),
