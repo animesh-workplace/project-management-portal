@@ -61,7 +61,6 @@ class UploadProjectSerializer(serializers.Serializer):
                                 f"Select {i['name']} from choices of {i['options']} only. Eg. '{i['name']}': {i['options'][0:2]}"
                             )
         if checks_matching == True:
-            # app_model = app_models.models[modelname.lower()]
             self.upload_table(modelname, data, app_model)
             return value
 
