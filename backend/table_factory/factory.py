@@ -3,6 +3,7 @@ from django.db import models
 from .utils import ModelRegistry
 from django.utils import timezone
 from .config import default_fields
+from multiselectfield import MultiSelectField
 
 # Might be removed
 from .exceptions import OutdatedModelError
@@ -80,7 +81,7 @@ class FieldFactory:
         "character": models.CharField,
         "integer": models.IntegerField,
         "boolean": models.BooleanField,
-        "multiradio": models.CharField,
+        "multiradio": MultiSelectField,
     }
 
     def __init__(self, field_schema):
