@@ -92,6 +92,7 @@ class FieldSchema(models.Model):
     name = models.CharField(max_length=100)
     null = models.BooleanField(default=False)
     unique = models.BooleanField(default=False)
+    required = models.BooleanField(default=False)
     max_length = models.PositiveIntegerField(null=True)
     model_schema = models.ForeignKey(
         TableSchema, on_delete=models.CASCADE, related_name="fields"
@@ -163,7 +164,7 @@ class FieldSchema(models.Model):
         """
         Get a dictionary of kwargs to be passed to the Django field constructor
         """
-        options = {"null": self.null, "unique": self.unique}
+        options = {"null": self.null, "unique": self.unique, "blank": self.required}
         if self.requires_max_length():
             options["max_length"] = self.max_length or default_charfield_max_length()
         return options
