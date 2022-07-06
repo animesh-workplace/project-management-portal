@@ -1,4 +1,4 @@
-from django.utils.text import slugify
+from .utils import get_name
 from rest_framework.response import Response
 from table_factory.api.tasks import CreateTable
 from schema_management.models import ProjectHandler
@@ -16,7 +16,7 @@ class CreateProjectSerializer(serializers.Serializer):
 
     def validate_name(self, name):
         user = self.context["request"].user
-        table_name = self.get_name("project", user, name)
+        table_name = get_name("project", user, name)
         # Check if the name exists in the queryset database
         if (
             self.context["view"]
@@ -31,20 +31,12 @@ class CreateProjectSerializer(serializers.Serializer):
         name = value.get("name")
         config = value.get("config")
         user = self.context["request"].user
-        table_name = self.get_name("project", user, name)
+        table_name = get_name("project", user, name)
         self.create_table(table_name, config)
         self.context["view"].get_queryset().objects.create(
             name=name, config=config, table_name=table_name
         )
         return value
-
-    @staticmethod
-    def get_name(table_type, user, project, metadata=None):
-        if table_type == "project":
-            return f"{user}_{slugify(project).replace('-', '_')}_si"
-        if table_type == "metadata":
-            return f"{user}_{slugify(project).replace('-', '_')}_{slugify(metadata).replace('-', '_')}_metadata"
-        raise exceptions.ValidationError("Invalid Type: Get name -> Project")
 
     @staticmethod
     def create_table(table_name, config):
