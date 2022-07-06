@@ -18,6 +18,7 @@ gunicorn = "^20.1.0"
 channels-redis = "^3.4.0"
 channels = "^3.0.5"
 uvicorn = "^0.18.2"
+django-multiselectfield = "^0.1.12"
 
 [tool.poetry.dev-dependencies]
 colorama = "^0.4.5"
