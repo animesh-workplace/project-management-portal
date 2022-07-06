@@ -93,6 +93,7 @@ class FieldSchema(models.Model):
     null = models.BooleanField(default=False)
     unique = models.BooleanField(default=False)
     required = models.BooleanField(default=False)
+    options = models.JSONField(default=list, null=True)
     max_length = models.PositiveIntegerField(null=True)
     model_schema = models.ForeignKey(
         TableSchema, on_delete=models.CASCADE, related_name="fields"
@@ -165,8 +166,15 @@ class FieldSchema(models.Model):
         Get a dictionary of kwargs to be passed to the Django field constructor
         """
         options = {"null": self.null, "unique": self.unique, "blank": not self.required}
+        print(self.data_type, self.options)
         if self.requires_max_length():
             options["max_length"] = self.max_length or default_charfield_max_length()
+        if self.data_type == "radio" or self.data_type == "multiradio":
+            user_choices = [i["title"] for i in self.options]
+            options["choices"] = tuple(
+                ((index, value) for index, value in enumerate(user_choices))
+            )
+            options["max_length"] = 1
         return options
 
     def _get_model_with_field(self):
