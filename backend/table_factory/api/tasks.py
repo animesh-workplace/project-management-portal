@@ -32,7 +32,12 @@ def CreateTable(table_name, config):
     clear_url_caches()
 
 
-def UploadProjectData(project_name, data, app_model):
+def UploadData(project_name, data, app_model):
     obj_list = [app_model(**data_dict) for data_dict in data]
     app_model.objects.bulk_create(obj_list)
     # return Response({"message": "Data uploaded successfully"})
+
+
+def UpdateData(project_name, data, app_model, id):
+    obj_list = [app_model(**data_dict) for data_dict in data]
+    app_model.objects.filter(id=id).update(**data[0])
