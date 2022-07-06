@@ -74,12 +74,13 @@ class ModelFactory:
 class FieldFactory:
     DATA_TYPES = {
         "text": models.TextField,
+        "radio": models.CharField,
         "float": models.FloatField,
         "date": models.DateTimeField,
         "character": models.CharField,
         "integer": models.IntegerField,
         "boolean": models.BooleanField,
-        "multiradio": models.JSONField,
+        "multiradio": models.CharField,
     }
 
     def __init__(self, field_schema):
