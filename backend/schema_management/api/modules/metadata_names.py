@@ -7,32 +7,33 @@ from rest_framework import generics, exceptions, serializers, status
 
 
 class MetadataNamesSerializer(serializers.Serializer):
+    # This requires project name to be given based on which the metadata names are given back
+    project_name = serializers.CharField()
+
     class Meta:
         fields = "__all__"
 
     def validate(self, value):
         user = self.context["request"].user
-        metadata_model = self.context["view"].get_queryset()
-        # donot use single letter variables
-        metadata = [
-            v
-            for k, v in metadata_model.items()
-            if k.startswith(user.username.lower()) and k.endswith("metadata")
-        ]
-        response = {}
-        response["metadata"] = [str(i).split(".")[2][0:-2] for i in metadata]
-        return response
+        project_name = value.get("project_name")
+        metadata_names = (
+            self.context["view"]
+            .get_queryset()
+            .objects.values_list("name", flat=True)
+            .filter(table_name__startswith=user.username + "_" + project_name)
+        )
+        return metadata_names
 
 
 class MetadataNamesView(generics.GenericAPIView):
-    queryset = apps.get_app_config("table_factory").models
+    queryset = MetadataHandler
     serializer_class = MetadataNamesSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)
         if self.serializer.is_valid():
-            return Response(self.serializer.validated_data)
+            return Response({"metadata": self.serializer.validated_data})
         return Response(
             create_uniform_response(self.serializer.errors),
             status=status.HTTP_406_NOT_ACCEPTABLE,
