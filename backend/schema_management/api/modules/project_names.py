@@ -14,25 +14,24 @@ class ProjectNamesSerializer(serializers.Serializer):
         user = self.context["request"].user
         project_model = self.context["view"].get_queryset()
         # donot use single letter variables
-        projects = [
-            v
-            for k, v in project_model.items()
-            if k.startswith(user.username.lower()) and k.endswith("si")
-        ]
-        response = {}
-        response["projects"] = [str(i).split(".")[2][0:-2] for i in projects]
-        return response
+        project_names = (
+            self.context["view"]
+            .get_queryset()
+            .objects.values_list("name", flat=True)
+            .filter(table_name__startswith=user.username)
+        )
+        return project_names
 
 
 class ProjectNamesView(generics.GenericAPIView):
-    queryset = apps.get_app_config("table_factory").models
-    serializer_class = ProjectNamesSerializer
+    queryset = ProjectHandler
     permission_classes = [IsAuthenticated]
+    serializer_class = ProjectNamesSerializer
 
     def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)
         if self.serializer.is_valid():
-            return Response(self.serializer.validated_data)
+            return Response({"projects": self.serializer.validated_data})
         return Response(
             create_uniform_response(self.serializer.errors),
             status=status.HTTP_406_NOT_ACCEPTABLE,
