@@ -10,7 +10,7 @@ from rest_framework import generics, exceptions, serializers, status
 
 class UpdateMetadataSerializer(serializers.Serializer):
     # rename id to something else id is a restricted keyword
-    id = serializers.IntegerField()
+    pk = serializers.IntegerField()
     data = serializers.JSONField()
     name = serializers.CharField()
 
@@ -19,7 +19,7 @@ class UpdateMetadataSerializer(serializers.Serializer):
 
     def validate(self, value):
         modelname = value.get("name")
-        id = value.get("id")
+        pk = value.get("pk")
         data = value.get("data")
         app_model = self.context["view"].get_queryset()[modelname.lower()]
         config_data = list(
@@ -33,9 +33,9 @@ class UpdateMetadataSerializer(serializers.Serializer):
         checks_matching = True
         l = list(app_model.objects.values_list("id", flat=True))
         print(l)
-        if id not in l:
+        if pk not in l:
             checks_matching = False
-            raise exceptions.ValidationError(f"{id} is not exists")
+            raise exceptions.ValidationError(f"{pk} is not exists")
         for row in data:
             for i in config_data:
                 if not i["name"] in row:
@@ -68,12 +68,12 @@ class UpdateMetadataSerializer(serializers.Serializer):
                                 f"Select {i['name']} from choices of {i['options']} only. Eg. '{i['name']}': {i['options'][0:2]}"
                             )
         if checks_matching == True:
-            self.update_table(modelname, data, app_model, id)
+            self.update_table(modelname, data, app_model, pk)
             return value
 
     @staticmethod
-    def update_table(name, data, app_model, id):
-        UpdateData(name, data, app_model, id)
+    def update_table(name, data, app_model, pk):
+        UpdateData(name, data, app_model, pk)
 
 
 class UpdateMetadataView(generics.CreateAPIView):
