@@ -7,14 +7,14 @@ from rest_framework import generics, exceptions, serializers, status
 
 
 class DeletePostSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    pk = serializers.IntegerField()
     name = serializers.CharField()
 
     class Meta:
         fields = "__all__"
 
     def validate(self, value):
-        id = value.get("id")
+        pk = value.get("pk")
         name = value.get("name")
         if not name in list(
             MetadataHandler.objects.values_list("table_name", flat=True).filter(
@@ -25,9 +25,9 @@ class DeletePostSerializer(serializers.Serializer):
         app_model = self.context["view"].get_queryset()[name.lower()]
         # donot use single letter variables
         l = list(app_model.objects.values_list("id", flat=True))
-        if id not in l:
-            raise exceptions.ValidationError("Id is not exists")
-        app_model.objects.filter(id=id).delete()
+        if pk not in l:
+            raise exceptions.ValidationError("Primary is not exists")
+        app_model.objects.filter(id=pk).delete()
         return value
 
 
