@@ -7,6 +7,7 @@ from rest_framework import generics, exceptions, serializers, status
 
 
 class DeletePostSerializer(serializers.Serializer):
+    # rename id to something else id is a restricted keyword
     id = serializers.IntegerField()
     name = serializers.CharField()
 

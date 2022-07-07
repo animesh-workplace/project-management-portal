@@ -23,6 +23,7 @@ class DeletePostSerializer(serializers.Serializer):
         ):
             raise exceptions.ValidationError("Project is not exists")
         app_model = self.context["view"].get_queryset()[name.lower()]
+        # donot use single letter variables
         l = list(app_model.objects.values_list("id", flat=True))
         if id not in l:
             raise exceptions.ValidationError("Id is not exists")

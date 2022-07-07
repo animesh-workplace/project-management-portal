@@ -9,6 +9,7 @@ from rest_framework import generics, exceptions, serializers, status
 
 
 class UpdateMetadataSerializer(serializers.Serializer):
+    # rename id to something else id is a restricted keyword
     id = serializers.IntegerField()
     data = serializers.JSONField()
     name = serializers.CharField()

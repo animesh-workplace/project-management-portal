@@ -13,6 +13,7 @@ class MetadataNamesSerializer(serializers.Serializer):
     def validate(self, value):
         user = self.context["request"].user
         metadata_model = self.context["view"].get_queryset()
+        # donot use single letter variables
         metadata = [
             v
             for k, v in metadata_model.items()
