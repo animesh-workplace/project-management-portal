@@ -7,7 +7,6 @@ from rest_framework import generics, exceptions, serializers, status
 
 
 class MetadataDetailSerializer(serializers.Serializer):
-    # This requires project name to be given based on which the metadata names are given back
     name = serializers.CharField()
 
     class Meta:
