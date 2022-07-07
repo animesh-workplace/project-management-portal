@@ -24,8 +24,8 @@ class DeletePostSerializer(serializers.Serializer):
         ):
             raise exceptions.ValidationError("Project is not exists")
         app_model = self.context["view"].get_queryset()[name.lower()]
-        l = list(app_model.objects.values_list("id", flat=True))
-        if pk not in l:
+        pk_list = list(app_model.objects.values_list("id", flat=True))
+        if pk not in pk_list:
             raise exceptions.ValidationError("Primary key is not exists")
         app_model.objects.filter(id=pk).delete()
         return value

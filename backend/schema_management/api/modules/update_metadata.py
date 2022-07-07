@@ -31,9 +31,8 @@ class UpdateMetadataSerializer(serializers.Serializer):
         for i in config_data:
             colmns.append(i["name"])
         checks_matching = True
-        l = list(app_model.objects.values_list("id", flat=True))
-        print(l)
-        if pk not in l:
+        pk_list = list(app_model.objects.values_list("id", flat=True))
+        if pk not in pk_list:
             checks_matching = False
             raise exceptions.ValidationError(f"{pk} is not exists")
         for row in data:
