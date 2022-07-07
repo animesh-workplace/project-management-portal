@@ -21,7 +21,6 @@ class UpdateProjectSerializer(serializers.Serializer):
         modelname = value.get("name")
         pk = value.get("pk")
         data = value.get("data")
-        # app_model = app_models.models[modelname.lower()]
         app_model = self.context["view"].get_queryset()[modelname.lower()]
         config_data = list(
             ProjectHandler.objects.filter(table_name=modelname).values_list(
@@ -32,9 +31,8 @@ class UpdateProjectSerializer(serializers.Serializer):
         for i in config_data:
             colmns.append(i["name"])
         checks_matching = True
-        l = list(app_model.objects.values_list("id", flat=True))
-        print(l)
-        if pk not in l:
+        pk_list = list(app_model.objects.values_list("id", flat=True))
+        if pk not in pk_list:
             checks_matching = False
             raise exceptions.ValidationError(f"Primary key is not exists")
         for row in data:
