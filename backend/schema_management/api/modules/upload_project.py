@@ -36,18 +36,18 @@ class UploadProjectSerializer(serializers.Serializer):
             .values_list("config", flat=True)
             .first()
         )
-        required_columns = {col["name"] for col in project_config if (col["required"])}
+        required_columns = {col["bname"] for col in project_config if (col["required"])}
         # Add checks for extra columns
         # Add checks for unique columns
         self.check_required_columns(required_columns, data)
-        self.check_radio_options("radio", project_config, data)
-        self.check_radio_options("multiradio", project_config, data)
+        # self.check_radio_options("radio", project_config, data)
+        # self.check_radio_options("multiradio", project_config, data)
         self.upload_table(table_name, data, instance)
         return value
 
     @staticmethod
     def check_required_columns(columns, data):
-        # If there are no required columns get return back
+        # If there are no required columns return back
         if not columns:
             return
         for (index, row) in enumerate(data):
@@ -63,15 +63,15 @@ class UploadProjectSerializer(serializers.Serializer):
             if row["data_type"] == "radio" or row["data_type"] == "multiradio":
                 if radiotype == "radio":
                     # If radio then only one option
-                    data_choices = {i[row["name"]] for i in data}
+                    data_choices = {i[row["bname"]] for i in data}
                 elif radiotype == "multiradio":
                     # If multiradio then we get list of list
-                    temp = [i[row["name"]] for i in data]
+                    temp = [i[row["bname"]] for i in data]
                     data_choices = set(itertools.chain(*temp))
                 # Checking if the unique options from the data is a subset of the options in the config
-                if not data_choices.issubset(set(row["options"])):
+                if not data_choices.issubset(set([i["title"] for i in row["options"]])):
                     raise exceptions.ValidationError(
-                        f"{row['name']} doesnot have valid option {list(data_choices - set(row['options']))}"
+                        f"{row['bname']} doesnot have valid option {list(data_choices - set([i['title'] for i in row['options']]))}"
                     )
 
     @staticmethod
