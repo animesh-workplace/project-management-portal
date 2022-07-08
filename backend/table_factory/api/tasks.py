@@ -11,14 +11,20 @@ def CreateTable(table_name, config):
     # Creating the empty table
     model_schema = TableSchema.objects.create(name=table_name)
     # Creating fields in the model_schema
-    for item in config:
-        # Might require a try and catch block
-        print(
-            "create_table ->",
-            item["data_type"],
-            item["options"] if ("options" in item.keys()) else [],
-        )
-        FieldSchema.objects.create(
+    # for item in config:
+    #     # Might require a try and catch block
+    #     FieldSchema.objects.create(
+    #         null=item["null"],
+    #         name=item["bname"],
+    #         unique=item["unique"],
+    #         required=item["required"],
+    #         model_schema=model_schema,
+    #         data_type=item["data_type"],
+    #         max_length=item["max_length"],
+    #         options=item["options"] if ("options" in item.keys()) else [],
+    #     )
+    obj_list = [
+        FieldSchema(
             null=item["null"],
             name=item["bname"],
             unique=item["unique"],
@@ -28,6 +34,10 @@ def CreateTable(table_name, config):
             max_length=item["max_length"],
             options=item["options"] if ("options" in item.keys()) else [],
         )
+        for item in config
+    ]
+    print(obj_list)
+    FieldSchema.objects.bulk_create(obj_list)
     # Registering model as a prt of Admin panel
     model = model_schema.as_model()
     admin.site.register(model)
