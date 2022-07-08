@@ -38,6 +38,7 @@ class CreateProjectSerializer(serializers.Serializer):
             "data_type",
             "max_length",
         }
+        self.check_data_type(config)
         for index, row in enumerate(config):
             if not column_structure.issubset(set(row.keys())):
                 raise exceptions.ValidationError(
@@ -49,6 +50,24 @@ class CreateProjectSerializer(serializers.Serializer):
                         f"Column {row['fname']} which is {row['data_type']} needs options field"
                     )
         return config
+
+    @staticmethod
+    def check_data_type(config):
+        data_type = {
+            "text",
+            "date",
+            "radio",
+            "float",
+            "integer",
+            "boolean",
+            "character",
+            "multiradio",
+        }
+        config_type = {i["data_type"] for i in config}
+        if not config_type.issubset(data_type):
+            raise exceptions.ValidationError(
+                f"Invalid data type {list(config_type - data_type)}"
+            )
 
     def validate(self, value):
         name = value.get("name")
