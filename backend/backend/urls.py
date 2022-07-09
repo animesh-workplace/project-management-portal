@@ -49,6 +49,16 @@ urlpatterns = [
                                     namespace="schema-management-api",
                                 ),
                             ),
+                            path(
+                                "projects/",
+                                include(
+                                    (
+                                        "request_management.api.urls",
+                                        "request_management",
+                                    ),
+                                    namespace="request-management-api",
+                                ),
+                            ),
                         ]
                     ),
                 ),
