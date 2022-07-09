@@ -9,8 +9,8 @@ from .modules.update_project import UpdateProjectView
 from .modules.upload_metadata import UploadMetadataView
 from .modules.create_metadata import CreateMetadataView
 from .modules.update_metadata import UpdateMetadataView
-from .modules.remove_project_info import DeleteProjectView
 from .modules.delete_metadata import DeleteMeatadataView
+from .modules.remove_project_info import DeleteProjectView
 
 # from schema_management.api.modules.upload_project_data
 
