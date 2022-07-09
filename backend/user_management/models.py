@@ -1,15 +1,18 @@
 from django.db import models
 from django.conf import settings
 from .storage import OverwriteStorage
+from multiselectfield import MultiSelectField
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AbstractUser
-
+from schema_management.models import ProjectHandler
 
 # Create your functions here
 def upload_path(instance, filename):
     # File will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return f"user_{instance.id}_{instance}/images/{filename}"
 
+
+PROJECT_CHOICES = tuple(ProjectHandler.objects.values_list("name", "name"))
 
 # Create your models here
 class User(AbstractUser):
@@ -40,6 +43,7 @@ class User(AbstractUser):
         upload_to=upload_path,
         default="default/avatar.png",
     )
+    projects = MultiSelectField(null=True, blank=True, choices=PROJECT_CHOICES)
 
 
 class MailToken(Token):
