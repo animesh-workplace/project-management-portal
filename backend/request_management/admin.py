@@ -5,7 +5,7 @@ from django.contrib import admin
 class UserReuestAdmin(admin.ModelAdmin):
     list_display = (
         "username",
-        "request_status",
+        "status",
         "submitted_time",
     )
 
@@ -15,11 +15,11 @@ class UserReuestAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "username",
-                    "requested_projects",
+                    "projects",
                     "response_time",
-                    "request_status",
-                    "response_message",
-                    "response_description",
+                    "status",
+                    "sop",
+                    "comments",
                 )
             },
         ),
