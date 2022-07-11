@@ -1,5 +1,5 @@
-from django.contrib import admin
 from .models import UserRequest
+from django.contrib import admin
 
 # Register your models here.
 class UserReuestAdmin(admin.ModelAdmin):
