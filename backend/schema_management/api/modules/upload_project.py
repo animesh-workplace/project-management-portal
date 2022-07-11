@@ -46,7 +46,9 @@ class UploadProjectSerializer(serializers.Serializer):
                     l = list(app_model.objects.values_list(i["name"], flat=True))
                     if row[i["name"]] in l:
                         checks_matching = False
-                        raise exceptions.ValidationError(f"{i['name']} is exists")
+                        raise exceptions.ValidationError(
+                            f"{i['name']} with {row[i['name']]} is exists"
+                        )
                 if "options" in i and i["data_type"] == "radio":
                     if not row[i["name"]] in i["options"]:
                         checks_matching = False
