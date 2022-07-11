@@ -1,6 +1,6 @@
 from django.db import models
-from schema_management.models import ProjectHandler
 from user_management.models import User
+from schema_management.models import ProjectHandler
 
 # Create your models here.
 
