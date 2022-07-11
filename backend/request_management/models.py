@@ -12,15 +12,15 @@ STATUS_CHOICES = (
 
 
 class UserRequest(models.Model):
+    sop = models.TextField(default=False)
+    comments = models.TextField(default=False)
+    submitted_time = models.DateTimeField(auto_now=True)
     username = models.ForeignKey(User, on_delete=models.CASCADE)
-    requested_projects = models.OneToOneField(
+    projects = models.OneToOneField(
         ProjectHandler, on_delete=models.CASCADE, primary_key=False
     )
-    request_status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="1")
-    submitted_time = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="1")
     response_time = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
-    response_message = models.TextField(default=False)
-    response_description = models.TextField(default=False)
 
     def __str__(self):
         return self.request_status
