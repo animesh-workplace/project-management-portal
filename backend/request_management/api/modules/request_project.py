@@ -13,47 +13,57 @@ class UserRequestSerializer(serializers.Serializer):
     class Meta:
         fields = None
 
+    def validate_requested_project(self, requested_project):
+        if ProjectHandler.objects.filter(name__iexact=requested_project).exists():
+            return requested_project
+        raise exceptions.ValidationError("Project doesn't exists")
+
     def validate(self, value):
         requested_project = value.get("requested_project")
         username = self.context["request"].user
         project_name = f"{username.username}_{requested_project}_si"
         queryset = self.context["view"].get_queryset().objects
-        projects_list = list(ProjectHandler.objects.values_list("name", flat=True))
         rejected_project = queryset.values_list(
             "requested_projects_id", flat=True
         ).filter(request_status="3", username=username)
-
-        if project_name in rejected_project:
-            queryset.filter(username=username).update(
-                request_status="1",
-            )
-            return value
-        if not requested_project in projects_list:
-            raise exceptions.ValidationError(
-                f"Please select project name from {projects_list} only."
-            )
-        if queryset.filter(username=username).first() is None:
-            queryset.create(username=username, requested_projects_id=project_name)
-            return value
-
-        if requested_project in list(username.projects):
-            raise exceptions.ValidationError(
-                f"You are already having access to {requested_project}."
-            )
         request_check = (
             queryset.values("request_status")
             .filter(username=username, requested_projects_id=project_name)
             .first()
         )
+        self.check_requested_project(requested_project, queryset, request_check)
+        self.check_accepted_project(requested_project, username)
+        self.check_rejected(project_name, rejected_project, queryset, username)
+        self.upload_request(queryset, username, project_name)
+        return value
+
+    @staticmethod
+    def check_requested_project(requested_project, queryset, request_check):
         if request_check == None:
-            queryset.create(username=username, requested_projects_id=project_name)
-            return value
+            return
         if request_check["request_status"] == "1":
             raise exceptions.ValidationError(
                 f"You have already requested for {requested_project}. Please wait until your request processed"
             )
+
+    @staticmethod
+    def check_accepted_project(requested_project, username):
+        if requested_project in list(username.projects):
+            raise exceptions.ValidationError(
+                f"You are already having access to {requested_project}."
+            )
+
+    @staticmethod
+    def check_rejected(project_name, rejected_project, queryset, username):
+        if project_name in rejected_project:
+            queryset.filter(username=username).update(
+                request_status="1",
+            )
+            raise exceptions.ValidationError(f"Request updated successfully")
+
+    @staticmethod
+    def upload_request(queryset, username, project_name):
         queryset.create(username=username, requested_projects_id=project_name)
-        return value
 
 
 class UserRequestApi(generics.CreateAPIView):
