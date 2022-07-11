@@ -21,6 +21,3 @@ class UserRequest(models.Model):
     )
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="1")
     response_time = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
-
-    def __str__(self):
-        return self.request_status
