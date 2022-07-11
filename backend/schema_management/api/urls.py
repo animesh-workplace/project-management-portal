@@ -12,7 +12,6 @@ from .modules.update_metadata import UpdateMetadataView
 from .modules.delete_metadata import DeleteMeatadataView
 from .modules.remove_project_info import DeleteProjectView
 
-# from schema_management.api.modules.upload_project_data
 
 urlpatterns = [
     path(
