@@ -2,6 +2,7 @@ import datetime
 from user_management.models import User
 from rest_framework.response import Response
 from request_management.models import UserRequest
+from schema_management.models import ProjectHandler
 from rest_framework.permissions import IsAuthenticated
 from user_management.api.utils import create_uniform_response
 from rest_framework import generics, exceptions, serializers, status
@@ -38,6 +39,7 @@ class ProjectPermissionsSerializer(serializers.Serializer):
             .values_list("projects", flat=True)
             .first()
         )
+        project_id = f"{user.username}_{project}_si"
         existed_projects.append(project)
         user_id = User.objects.filter(username__iexact=username).values("id").first()
         requested_project = instance.values_list("projects_id", flat=True).filter(
@@ -46,7 +48,13 @@ class ProjectPermissionsSerializer(serializers.Serializer):
         if user.user_type == 2:
             self.check_project(user, project, requested_project)
             self.accpet_project(
-                instance, username, existed_projects, status, user_id, comments
+                instance,
+                username,
+                existed_projects,
+                status,
+                user_id,
+                comments,
+                project_id,
             )
             return value
         raise exceptions.ValidationError("Only project admin has this permissions")
@@ -57,9 +65,16 @@ class ProjectPermissionsSerializer(serializers.Serializer):
             raise exceptions.ValidationError("Please provide requested project only")
 
     @staticmethod
-    def accpet_project(instance, username, existed_projects, status, user_id, comments):
+    def accpet_project(
+        instance, username, existed_projects, status, user_id, comments, project_id
+    ):
+        if status == "3":
+            instance.filter(username=user_id["id"], projects_id=project_id).update(
+                status=status, comments=comments, response_time=datetime.datetime.now()
+            )
+            raise exceptions.ValidationError("Project permissions are rejected.")
         User.objects.filter(username__iexact=username).update(projects=existed_projects)
-        instance.filter(username=user_id["id"]).update(
+        instance.filter(username=user_id["id"], projects_id=project_id).update(
             status=status, comments=comments, response_time=datetime.datetime.now()
         )
 
