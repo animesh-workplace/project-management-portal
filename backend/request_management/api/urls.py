@@ -1,6 +1,6 @@
 from django.urls import path, include
-from .modules.request_project import UserRequestApi
+from .modules.request_project import UserRequestView
 
 urlpatterns = [
-    path("request/", UserRequestApi.as_view(), name="request-project-api"),
+    path("request/", UserRequestView.as_view(), name="request-project-api"),
 ]
