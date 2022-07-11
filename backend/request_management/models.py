@@ -1,4 +1,5 @@
 from django.db import models
+from schema_management.models import ProjectHandler
 from user_management.models import User
 
 # Create your models here.
@@ -16,7 +17,6 @@ class UserRequest(models.Model):
         ProjectHandler, on_delete=models.CASCADE, primary_key=False
     )
     request_status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="1")
-    # projects = MultiSelectField(null=True, blank=True, choices=PROJECT_CHOICES)
     submitted_time = models.DateTimeField(auto_now=True)
     response_time = models.DateTimeField(auto_now=False, auto_now_add=False, null=True)
     response_message = models.TextField(default=False)
