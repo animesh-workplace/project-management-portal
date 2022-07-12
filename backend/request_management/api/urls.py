@@ -1,8 +1,8 @@
 from django.urls import path, include
-from .modules.request_project import UserRequestView
-from .modules.accept_project import ProjectPermissionsView
+from .modules.send_request import SendRequestView
+from .modules.handle_request import HandleRequestView
 
 urlpatterns = [
-    path("request/", UserRequestView.as_view(), name="request-project-api"),
-    path("accept/", ProjectPermissionsView.as_view(), name="accept-project-api"),
+    path("request/", SendRequestView.as_view(), name="send-request-api"),
+    path("handle/", HandleRequestView.as_view(), name="handle-request-api"),
 ]
