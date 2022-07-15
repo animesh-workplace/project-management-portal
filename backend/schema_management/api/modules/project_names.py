@@ -13,7 +13,6 @@ class ProjectNamesSerializer(serializers.Serializer):
     def validate(self, value):
         user = self.context["request"].user
         project_model = self.context["view"].get_queryset()
-        # donot use single letter variables
         project_names = (
             self.context["view"]
             .get_queryset()
