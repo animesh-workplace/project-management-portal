@@ -4,16 +4,16 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.utils import timezone
 
-load_dotenv(os.path.join(settings.BASE_DIR, '.env'))
+load_dotenv(os.path.join(settings.BASE_DIR, ".env"))
 
 
 def send_email_activate(first_name, username, email, activation_link):
-    credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
-    account = Account(credentials, auth_flow_type='authorization')
-    if (account.is_authenticated):
+    credentials = (os.getenv("ONEDRIVE_CLIENT"), os.getenv("ONEDRIVE_SECRET"))
+    account = Account(credentials, auth_flow_type="authorization")
+    if account.is_authenticated:
         message = account.new_message()
         message.to.add([email])
-        message.subject = f'✨ Activate your account, { username } ✨'
+        message.subject = f"✨ Activate your account, { username } ✨"
         message.body = f"""
             <div>
                 👋🏼 Hi { first_name },
@@ -49,23 +49,23 @@ def send_email_activate(first_name, username, email, activation_link):
         """
         try:
             response = message.send()
-            if (response):
+            if response:
                 return "Mail sent"
-            return "Mail couldn\'t be sent"
+            return "Mail couldn't be sent"
         except Exception as e:
             print(e.message)
-            return "Mail couldn\'t be sent"
+            return "Mail couldn't be sent"
     else:
-        print('Authentication not done')
+        print("Authentication not done")
 
 
 def send_email_reset_password(first_name, username, email, link):
-    credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
-    account = Account(credentials, auth_flow_type='authorization')
-    if (account.is_authenticated):
+    credentials = (os.getenv("ONEDRIVE_CLIENT"), os.getenv("ONEDRIVE_SECRET"))
+    account = Account(credentials, auth_flow_type="authorization")
+    if account.is_authenticated:
         message = account.new_message()
         message.to.add([email])
-        message.subject = f'💪 Reset your password { username }'
+        message.subject = f"💪 Reset your password { username }"
         message.body = f"""
             <div>
                 Dear { first_name },
@@ -103,23 +103,23 @@ def send_email_reset_password(first_name, username, email, link):
         """
         try:
             response = message.send()
-            if (response):
+            if response:
                 return "Mail sent"
-            return "Mail couldn\'t be sent"
+            return "Mail couldn't be sent"
         except Exception as e:
-            print(e.message)
-            return "Mail couldn\'t be sent"
+            print(e)
+            return "Mail couldn't be sent"
     else:
-        print('Authentication not done')
+        print("Authentication not done")
 
 
 def send_email_mail_change_request(first_name, username, old_email, new_email, link):
-    credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
-    account = Account(credentials, auth_flow_type='authorization')
-    if (account.is_authenticated):
+    credentials = (os.getenv("ONEDRIVE_CLIENT"), os.getenv("ONEDRIVE_SECRET"))
+    account = Account(credentials, auth_flow_type="authorization")
+    if account.is_authenticated:
         message = account.new_message()
         message.to.add([old_email])
-        message.subject = f'🙏🏽👀 Verify mail change, { username }'
+        message.subject = f"🙏🏽👀 Verify mail change, { username }"
         message.body = f"""
             <div>
                 Dear { first_name },
@@ -156,23 +156,23 @@ def send_email_mail_change_request(first_name, username, old_email, new_email, l
         """
         try:
             response = message.send()
-            if (response):
+            if response:
                 return "Mail sent"
-            return "Mail couldn\'t be sent"
+            return "Mail couldn't be sent"
         except Exception as e:
             print(e.message)
-            return "Mail couldn\'t be sent"
+            return "Mail couldn't be sent"
     else:
-        print('Authentication not done')
+        print("Authentication not done")
 
 
 def send_email_accept_mail(first_name, username, email):
-    credentials = (os.getenv('ONEDRIVE_CLIENT'), os.getenv('ONEDRIVE_SECRET'))
-    account = Account(credentials, auth_flow_type='authorization')
-    if (account.is_authenticated):
+    credentials = (os.getenv("ONEDRIVE_CLIENT"), os.getenv("ONEDRIVE_SECRET"))
+    account = Account(credentials, auth_flow_type="authorization")
+    if account.is_authenticated:
         message = account.new_message()
         message.to.add([email])
-        message.subject = f'👏|🙌 Yay { username }, we have updated your email'
+        message.subject = f"👏|🙌 Yay { username }, we have updated your email"
         message.body = f"""
             <div>
                 Dear { first_name },
@@ -187,11 +187,11 @@ def send_email_accept_mail(first_name, username, email):
         """
         try:
             response = message.send()
-            if (response):
+            if response:
                 return "Mail sent"
-            return "Mail couldn\'t be sent"
+            return "Mail couldn't be sent"
         except Exception as e:
             print(e.message)
-            return "Mail couldn\'t be sent"
+            return "Mail couldn't be sent"
     else:
-        print('Authentication not done')
+        print("Authentication not done")

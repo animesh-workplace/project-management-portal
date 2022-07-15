@@ -9,6 +9,24 @@ from rest_framework import generics, exceptions, serializers, status
 
 
 class HandleRequestSerializer(serializers.Serializer):
+    """Handle Request Serializer: Validates the request handling related parameters
+
+    Parameters
+    ----------
+    username : string
+            The username of the user <Required>
+    project : string
+            The project which permissions are accepting or denying <Required>
+    status : string
+            The email project <Required>
+    comments : text
+            Comments on handled project permissions <Required>
+
+    Returns
+    -------
+    Ordered dictionary of validated data
+    """
+
     username = serializers.CharField()
     project = serializers.CharField()
     status = serializers.CharField()
@@ -62,6 +80,7 @@ class HandleRequestSerializer(serializers.Serializer):
             comments,
             project_id,
         )
+        print(value)
         return value
 
     @staticmethod
@@ -85,6 +104,25 @@ class HandleRequestSerializer(serializers.Serializer):
 
 
 class HandleRequestView(generics.GenericAPIView):
+    """Handle Request API: Handles the user request to the project
+
+    Parameters
+    ----------
+    username : string
+            The username of the user <Required>
+    project : string
+            The project which permissions are accepting or denying <Required>
+    status : string
+            The email project <Required>
+    comments : text
+            Comments on handled project permissions <Required>
+
+    Returns
+    -------
+    Dict
+            Dict containing 'message' and 'code' with success/failure
+    """
+
     queryset = UserRequest
     permission_classes = [IsAuthenticated]
     serializer_class = HandleRequestSerializer
