@@ -46,14 +46,14 @@ export const mutations = {
 export const actions = {
     async StartLogin({ commit, dispatch }, payload) {
         try {
-            const response = await this.$axios.$post('/auth/login/', payload, {
+            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/user/login/', payload, {
                 withCredentials: true,
                 credentials: 'include',
             })
             await dispatch('SetTokenExpiration', this.$dayjs(response.expiration).diff(this.$dayjs()))
             await dispatch('GetUser')
             await commit('SET_AUTHENTICATION', true)
-            this.$router.push('/upload')
+            this.$router.push('/')
             this.$notification.show(response.code, response.message, 'SUCCESS')
         } catch (err) {
             this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
@@ -61,7 +61,7 @@ export const actions = {
     },
     async StartRegistration({ commit, dispatch }, payload) {
         try {
-            const response = await this.$axios.$post('/auth/register/', payload)
+            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/user/register/', payload)
             this.$notification.show(response.code, response.message, 'SUCCESS')
         } catch (err) {
             this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
@@ -69,7 +69,7 @@ export const actions = {
     },
     async StartActivation({ commit, dispatch }, payload) {
         try {
-            const response = await this.$axios.$post('/auth/activate/', payload)
+            const response = await this.$axios.$post('/activate/', payload)
             this.$notification.show(response.code, response.message, 'SUCCESS')
             this.$router.push('/')
         } catch (err) {
@@ -78,16 +78,17 @@ export const actions = {
     },
     async GetUser({ commit }) {
         try {
-            const response = await this.$axios.$post('/auth/user/')
+            const response = await this.$axios.$post('/info/')
             await commit('SET_USERNAME', response.data.username)
             await commit('SET_PROFILE', response.data)
+            console.log(response.data)
         } catch (err) {
             this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
         }
     },
     async StartLogout({ commit }) {
         try {
-            const response = await this.$axios.$post('/auth/logout/')
+            const response = await this.$axios.$post('/logout/')
             await commit('RESET')
             this.$router.push('/')
             this.$notification.show('Logout', response.message, 'WARNING')
@@ -133,7 +134,7 @@ export const actions = {
     async RefreshToken({ commit, dispatch }) {
         try {
             const response = await this.$axios.$post(
-                '/auth/refresh/',
+                '/refresh/',
                 {},
                 {
                     withCredentials: true,
