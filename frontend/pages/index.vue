@@ -1,7 +1,5 @@
 <template>
-
-<!-- some changes -->
-  <Tutorial/>
+  <AuthenticationGetUser/>
 </template>
 
 <script>
