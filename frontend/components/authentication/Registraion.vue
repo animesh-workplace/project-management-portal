@@ -38,7 +38,7 @@
 	                >
 	                <input
 	                  type="text"
-	                  v-model="username"
+	                  v-model="params.username"
 	                  id="username"
 	                  placeholder="Please insert your username"
 	                  class="appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg"
@@ -50,7 +50,7 @@
 	                >
 	                <input
 	                  type="text"
-	                  v-model="email"
+	                  v-model="params.email"
 	                  id="email"
 	                  placeholder="Please insert your email"
 	                  class="appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg"
@@ -62,7 +62,7 @@
 	                >
 	                <input
 	                  type="text"
-	                  v-model="first_name"
+	                  v-model="params.first_name"
 	                  id="first_name"
 	                  placeholder="Please insert your first name"
 	                  class="appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg"
@@ -74,7 +74,7 @@
 	                >
 	                <input
 	                  type="text"
-	                  v-model="last_name"
+	                  v-model="params.last_name"
 	                  id="last_name"
 	                  placeholder="Please insert your last name"
 	                  class="appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg"
@@ -86,7 +86,7 @@
 	                >
 	                <input
 	                  type="password"
-	                  v-model="password"
+	                  v-model="params.password"
 	                  id="password"
 	                  placeholder="Please insert your password"
 	                  class="appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg"
@@ -98,7 +98,7 @@
 	                >
 	                <input
 	                  type="password"
-	                  v-model="password2"
+	                  v-model="params.password2"
 	                  id="password2"
 	                  placeholder="Please insert your password"
 	                  class="appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg"
@@ -149,35 +149,53 @@
 	</div>
 </template>
 <script type="text/javascript">
-export default {
-   name: "Signup",
-   data() {
-      return {
-         username: null,
-         email: null,
-         first_name: null,
-         last_name: null,
-         password: null,
-         password2: null,
-      };
-   },
-   methods: {
-      async signupHandler() {
-         const data = {
-            username: this.username,
-            email: this.email,
-            first_name: this.first_name,
-            last_name: this.last_name,
-            password: this.password,
-            password2: this.password2,
-         };
-         try {
-            const res = await this.$axios.post("http://10.10.6.87/pmp/api/user/register/", data)
-            console.log(res.data.message)
-         } catch (e) {
-            console.log(e.response.data.message)
-         }
-      },
-   },
-};
+	import { mapFields } from "vuex-map-fields";
+	export default {
+	    data: () => ({
+	        params: {
+	        	username: "",
+	         email: "",
+	         first_name: "",
+	         last_name: "",
+	         password: "",
+	         password2: "",
+	        }
+	    }),
+	    methods: {
+	        signupHandler() {
+	            this.$store.dispatch("auth/StartRegistration", this.params);
+	        },
+	    },
+	};
+// export default {
+//    name: "Signup",
+//    data() {
+//       return {
+//          username: null,
+//          email: null,
+//          first_name: null,
+//          last_name: null,
+//          password: null,
+//          password2: null,
+//       };
+//    },
+//    methods: {
+//       async signupHandler() {
+//          const data = {
+//             username: this.username,
+//             email: this.email,
+//             first_name: this.first_name,
+//             last_name: this.last_name,
+//             password: this.password,
+//             password2: this.password2,
+//          };
+//          try {
+//             const res = await this.$axios.post("http://10.10.6.87/pmp/api/user/register/", data)
+//             console.log(res.data.message)
+//          } catch (e) {
+//             console.log(e.response.data.message)
+//          }
+//       },
+//    },
+// };
 </script>
