@@ -38,7 +38,7 @@
                    >
                    <input
                      type="text"
-                     v-model="username"
+                     v-model="params.username"
                      id="username"
                      placeholder="Please insert your username"
                      class="appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg"
@@ -50,7 +50,7 @@
                    >
                    <input
                      type="password"
-                     v-model="password"
+                     v-model="params.password"
                      id="password"
                      placeholder="Please insert your password"
                      class="appearance-none border-2 border-gray-100 rounded-lg px-4 py-3 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:shadow-lg"
@@ -103,26 +103,41 @@
 </template>
 
 <script>
-export default {
-   name: 'Login',
-   data() {
-      return {
-         username: null,
-         password: null,
-      }
-   },
-   methods: {
-     async loginHandler() {
-         const data = { 'username': this.username, 'password': this.password }
-         try{
-           const response = await this.$auth.loginWith('local', { data: data})
-           this.$auth.$storage.setUniversal('username', response.data.username)
-           await this.$auth.setUserToken(response.data.access_token, response.data.refresh_token)
-	        console.log(response.data.message)                                                           
-         } catch(e) {
-            console(e)
-         }
-      }
-   }
-};
+  import { mapFields } from "vuex-map-fields";
+  import { map } from "lodash";
+  export default {
+      data: () => ({
+          params: {
+            username: "",
+            password: "",
+          }
+      }),
+      methods: {
+          loginHandler() {
+              this.$store.dispatch("auth/StartLogin", this.params);
+          },
+      },
+  };
+// export default {
+//    name: 'Login',
+//    data() {
+//       return {
+//          username: null,
+//          password: null,
+//       }
+//    },
+//    methods: {
+//      async loginHandler() {
+//          const data = { 'username': this.username, 'password': this.password }
+//          try{
+//            const response = await this.$auth.loginWith('local', { data: data})
+//            this.$auth.$storage.setUniversal('username', response.data.username)
+//            await this.$auth.setUserToken(response.data.access_token, response.data.refresh_token)
+// 	        console.log(response.data.message)                                                           
+//          } catch(e) {
+//             console(e)
+//          }
+//       }
+//    }
+// };
 </script>
