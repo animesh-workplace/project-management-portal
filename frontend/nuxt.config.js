@@ -24,7 +24,8 @@ export default {
     '@nuxtjs/tailwindcss','@nuxtjs/svg'
   ],
   modules: [
-    // https://go.nuxtjs.dev/axios
+    'cookie-universal-nuxt', ['nuxt-tailvue', { toast: true }],
+    '@nuxtjs/dayjs',
     '@nuxtjs/axios',
     "@nuxtjs/auth-next",
   ],
