@@ -102,30 +102,51 @@
 	</div>
 </template>
 <script type="text/javascript">
-export default {
-   name: "Signup",
-   data() {
-      return {
-         username: this.$route.query.username,
-         email: this.$route.query.email,
-         token: this.$route.query.token,
-      };
-   },
+	import { mapFields } from "vuex-map-fields";
+	import { map } from "lodash";
+	export default {
+	   data() {
+	      return {
+	         username: this.$route.query.username,
+	         email: this.$route.query.email,
+	         token: this.$route.query.token,
+	      };
+	   },
+	   methods: {
+	      activationHandler() {
+		      const data = {
+		         username: this.username,
+		         email: this.email,
+		         token: this.token,
+		      }
+	      	this.$store.dispatch("auth/StartActivation", data);
+	      },
+	    },
+	};
+// export default {
+//    name: "Signup",
+//    data() {
+//       return {
+//          username: this.$route.query.username,
+//          email: this.$route.query.email,
+//          token: this.$route.query.token,
+//       };
+//    },
 
-   methods: {
-      async activationHandler() {
-         const data = {
-            username: this.username,
-            email: this.email,
-            token: this.token,
-         };
-         try {
-            const res = await this.$axios.post("http://10.10.6.87/pmp/api/user/activate/", data)
-            console.log(res.data.message)
-         } catch (e) {
-            console.log(e.response.data.message)
-         }
-      },
-   },
-};
+//    methods: {
+//       async activationHandler() {
+//          const data = {
+//             username: this.username,
+//             email: this.email,
+//             token: this.token,
+//          };
+//          try {
+//             const res = await this.$axios.post("http://10.10.6.87/pmp/api/user/activate/", data)
+//             console.log(res.data.message)
+//          } catch (e) {
+//             console.log(e.response.data.message)
+//          }
+//       },
+//    },
+// };
 </script>
