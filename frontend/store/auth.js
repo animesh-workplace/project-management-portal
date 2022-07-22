@@ -2,7 +2,7 @@ import { getField, updateField } from 'vuex-map-fields'
 
 export const state = () => ({
     profile: {},
-    username: '',
+    username: null,
     refresh_token: false,
     authenticated: false,
     token_expiration: false,
@@ -90,7 +90,7 @@ export const actions = {
         try {
             const response = await this.$axios.$post('/logout/')
             await commit('RESET')
-            this.$router.push('/')
+            this.$router.push("/auth/login");
             this.$notification.show('Logout', response.message, 'WARNING')
         } catch (err) {
             this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
