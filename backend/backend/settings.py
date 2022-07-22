@@ -34,7 +34,12 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
 ]
 
-LOCAL_APPS = ["user_management", "schema_management", "table_factory"]
+LOCAL_APPS = [
+    "user_management",
+    "schema_management",
+    "table_factory",
+    "request_management",
+]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

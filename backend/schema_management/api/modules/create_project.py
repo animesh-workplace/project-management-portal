@@ -28,7 +28,7 @@ class CreateProjectSerializer(serializers.Serializer):
         return name
 
     def validate(self, value):
-        name = value.get("name")
+        name = value.get("name").lower()
         config = value.get("config")
         user = self.context["request"].user
         table_name = self.get_name("project", user, name)

@@ -10,7 +10,6 @@ load_dotenv(os.path.join(settings.BASE_DIR, ".env"))
 def send_email_activate(first_name, username, email, activation_link):
     credentials = (os.getenv("ONEDRIVE_CLIENT"), os.getenv("ONEDRIVE_SECRET"))
     account = Account(credentials, auth_flow_type="authorization")
-
     if account.is_authenticated:
         message = account.new_message()
         message.to.add([email])

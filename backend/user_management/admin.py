@@ -19,6 +19,7 @@ class AccountAdmin(UserAdmin):
             "Additional Fields",
             {
                 "fields": (
+                    "projects",
                     "user_type",
                     "login_history",
                     "avatar",
