@@ -16,7 +16,7 @@ class UploadProjectSerializer(serializers.Serializer):
         fields = None
 
     def validate(self, value):
-        modelname = value.get("name")
+        modelname = value.get("name").lower()
         data = value.get("data")
         # app_model = app_models.models[modelname.lower()]
         app_model = self.context["view"].get_queryset()[modelname.lower()]
@@ -27,11 +27,11 @@ class UploadProjectSerializer(serializers.Serializer):
         )[0]
         colmns = []
         for i in config_data:
-            colmns.append(i["name"])
+            colmns.append(i["name"].lower())
         checks_matching = True
         for row in data:
             for i in config_data:
-                if not i["name"] in row:
+                if not i["name"].lower() in row:
                     checks_matching = False
                     raise exceptions.ValidationError(
                         f"{app_model} requires column {i['name']}"
