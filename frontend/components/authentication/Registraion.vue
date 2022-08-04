@@ -153,7 +153,7 @@
 	export default {
 	    data: () => ({
 	        params: {
-	        	username: "",
+	         username: "",
 	         email: "",
 	         first_name: "",
 	         last_name: "",
