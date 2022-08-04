@@ -1,4 +1,6 @@
 from django.urls import path, include
+from .modules.get_config import ProjectConfigView
+from .modules.get_config import MetadataConfigView
 from .modules.project_names import ProjectNamesView
 from .modules.project_info import ProjectDetailView
 from .modules.metadata_info import MetadataDetailView
@@ -22,6 +24,9 @@ urlpatterns = [
                     "create/", CreateMetadataView.as_view(), name="create-metadata-api"
                 ),
                 path(
+                    "config/", MetadataConfigView.as_view(), name="metadata-config-api"
+                ),
+                path(
                     "upload/", UploadMetadataView.as_view(), name="create-metadata-api"
                 ),
                 path(
@@ -40,6 +45,7 @@ urlpatterns = [
         include(
             [
                 path("create/", CreateProjectView.as_view(), name="create-project-api"),
+                path("config/", ProjectConfigView.as_view(), name="project-config-api"),
                 path("upload/", UploadProjectView.as_view(), name="upload-project-api"),
                 path("update/", UpdateProjectView.as_view(), name="update-project-api"),
                 path("info/", ProjectDetailView.as_view(), name="project-info-api"),
