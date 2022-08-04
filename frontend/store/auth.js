@@ -2,7 +2,7 @@ import { getField, updateField } from 'vuex-map-fields'
 
 export const state = () => ({
     profile: {},
-    username: null,
+    username: "",
     refresh_token: false,
     authenticated: false,
     token_expiration: false,
