@@ -16,7 +16,7 @@ class UploadMetadataSerializer(serializers.Serializer):
         fields = None
 
     def validate(self, value):
-        modelname = value.get("name")
+        modelname = value.get("name").lower()
         data = value.get("data")
         app_model = self.context["view"].get_queryset()[modelname.lower()]
         config_data = list(
@@ -26,11 +26,11 @@ class UploadMetadataSerializer(serializers.Serializer):
         )[0]
         colmns = []
         for i in config_data:
-            colmns.append(i["name"])
+            colmns.append(i["name"].lower())
         checks_matching = True
         for row in data:
             for i in config_data:
-                if not i["name"] in row:
+                if not i["name"].lower() in row:
                     checks_matching = False
                     raise exceptions.ValidationError(
                         f"{app_model} requires column {i['name']}"
@@ -47,13 +47,13 @@ class UploadMetadataSerializer(serializers.Serializer):
                         checks_matching = False
                         raise exceptions.ValidationError(f"{i['name']} is exists")
                 if "options" in i and i["data_type"] == "radio":
-                    if not row[i["name"]] in i["options"]:
+                    if not row[i["name"].lower()] in i["options"]:
                         checks_matching = False
                         raise exceptions.ValidationError(
                             f"Select {i['name']} from any one of {i['options']} only. Eg. '{i['name']}': '{i['options'][0]}'"
                         )
                 if "options" in i and i["data_type"] == "multiradio":
-                    for j in row[i["name"]]:
+                    for j in row[i["name"].lower()]:
                         if not j in i["options"]:
                             checks_matching = False
                             raise exceptions.ValidationError(
