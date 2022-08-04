@@ -8,15 +8,24 @@ from rest_framework import generics, exceptions, serializers, status
 
 class MetadataDetailSerializer(serializers.Serializer):
     name = serializers.CharField()
+    m_id = serializers.IntegerField()
 
     class Meta:
         fields = "__all__"
 
     def validate(self, value):
-        name = value.get("name")
+        name = value.get("name").lower()
+        m_id = value.get("m_id")
+        if (
+            not self.context["view"]
+            .get_queryset()[name.lower()]
+            .objects.filter(id=m_id)
+            .exists()
+        ):
+            raise exceptions.ValidationError("metadata is not exists")
         if MetadataHandler.objects.filter(table_name=name).exists():
             metadata_model = self.context["view"].get_queryset()[name.lower()]
-            queryset = metadata_model.objects.all().values()
+            queryset = metadata_model.objects.values().get(id=m_id)
             return queryset
         raise exceptions.ValidationError(f"{name} is not exists in metadata_model")
 
