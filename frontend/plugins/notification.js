@@ -10,7 +10,7 @@ export default ({ app }, inject) => {
 					classTitle: 'text-white',
 					classClose: 'text-white',
 					classMessage: 'text-white',
-					classToast: 'bg-emerald-600',
+					classToast: 'bg-green-600',
 				})
 			} else if (mode == 'ERROR') {
 				app.$toast.show({
@@ -20,7 +20,7 @@ export default ({ app }, inject) => {
 					message: message,
 					classTitle: 'text-white',
 					classClose: 'text-white',
-					classToast: 'bg-rose-600',
+					classToast: 'bg-red-500',
 					classMessage: 'text-white',
 				})
 			} else if (mode == 'WARNING') {
@@ -32,7 +32,7 @@ export default ({ app }, inject) => {
 					classTitle: 'text-white',
 					classClose: 'text-white',
 					classMessage: 'text-white',
-					classToast: 'bg-amber-500',
+					classToast: 'bg-yellow-500',
 				})
 			}
 		},
