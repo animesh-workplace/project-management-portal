@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<header class="lg:px-16 px-8 bg-green-700 shadow-md py-4 md:py-0">
+		<header class="lg:px-16 px-8 bg-green-500 shadow-md py-4 md:py-0">
 	        <div class="container mx-auto flex flex-wrap items-center">
 	            <div class="flex-1 flex justify-between items-center">
 	                <a href="" class="text-xl font-semibold text-green-100 hover:text-white tracking-normal">Project Management</a>
@@ -22,7 +22,7 @@
 	                        	<button v-if="username" class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Logout</button>
 	                        	<button v-if="username==null" class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Login</button>
 	                        </li>
-	                        <li><a class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" href="">Treatments</a></li>
+	                        <!-- <li><a class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" href="">Treatments</a></li>
 	                        <li><a class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" href="">Blog</a></li>
 	                        <li><a class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" href="">Contact Us</a></li>
 	                        <li class="dropdown inline-block relative w-full md:w-auto md:mb-0 mb-2">
@@ -42,7 +42,7 @@
 	                                <li class=""><a class="rounded-b bg-white hover:bg-gray-100 py-2 px-4 block whitespace-no-wrap"
 	                                        href="">Testing Link Three, Nice!</a></li>
 	                            </ul>
-	                        </li>
+	                        </li> -->
 	                        <li>
 	                            <a href="" class="md:ml-4 flex items-center justify-start pointer-cursor">
 	                                <img class="rounded-full w-6 h-6 bg-green-800" src="https://unavatar.now.sh/dalton@sutton.io">
