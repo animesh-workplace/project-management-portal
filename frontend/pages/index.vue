@@ -1,5 +1,5 @@
 <template>
-  <AuthenticationGetUser/>
+  <ProjectInfo/>
 </template>
 
 <script>
