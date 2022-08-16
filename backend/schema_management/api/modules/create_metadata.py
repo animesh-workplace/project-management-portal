@@ -1,9 +1,10 @@
 from django.utils.text import slugify
 from rest_framework.response import Response
-from table_factory.api.tasks import CreateTable
+from table_factory.models import TableSchema, FieldSchema
 from rest_framework.permissions import IsAuthenticated
 from user_management.api.utils import create_uniform_response
 from schema_management.models import MetadataHandler, ProjectHandler
+from table_factory.api.tasks import CreateTable, CreateMetadataTable
 from rest_framework import generics, exceptions, serializers, status
 
 
@@ -25,6 +26,7 @@ class CreateMetadataSerializer(serializers.Serializer):
 
     def check_name(self, user, project, name):
         table_name = self.get_name("metadata", user, project, name)
+        print(table_name)
         # Check if the name exists in the queryset database
         if (
             self.context["view"]
@@ -40,10 +42,37 @@ class CreateMetadataSerializer(serializers.Serializer):
         config = value.get("config")
         project = value.get("project")
         user = self.context["request"].user
+        print()
         if self.check_name(user, project, name):
             table_name = self.get_name("metadata", user, project, name)
             project_instance = self.get_project(self.get_name("project", user, project))
-            self.create_table(table_name, config)
+            self.create_table(table_name, config, project)
+            model_schema = TableSchema.objects.filter(name=table_name).values_list(
+                "id", flat=True
+            )[0]
+
+            print(table_name)
+            si_config_data = list(
+                ProjectHandler.objects.filter(
+                    table_name=f"{table_name.rsplit('_',2)[0]}_si"
+                ).values_list("config", flat=True)
+            )[0]
+            si_config_data_object = next(
+                filter(lambda i: i["unique"] == "True", si_config_data)
+            )
+            print(si_config_data_object["name"])
+
+            config.insert(
+                0,
+                {
+                    "name": f"{si_config_data_object['name']}_id",
+                    "unique": True,
+                    "max_length": 225,
+                    "null": False,
+                    "data_type": "character",
+                    "model_schema": model_schema,
+                },
+            )
             self.context["view"].get_queryset().objects.create(
                 name=name,
                 config=config,
@@ -65,8 +94,8 @@ class CreateMetadataSerializer(serializers.Serializer):
         raise exceptions.ValidationError("Invalid Type: Get name -> Metadata")
 
     @staticmethod
-    def create_table(table_name, config):
-        CreateTable(table_name, config)
+    def create_table(table_name, config, project):
+        CreateMetadataTable(table_name, config, project)
         # Calls the function for creating the project table in MetadataFactory
         # It should return true/false
         # pass
