@@ -32,7 +32,7 @@ export default ({ app }, inject) => {
 					classTitle: 'text-white',
 					classClose: 'text-white',
 					classMessage: 'text-white',
-					classToast: 'bg-yellow-500',
+					classToast: 'bg-yellow-400',
 				})
 			}
 		},
