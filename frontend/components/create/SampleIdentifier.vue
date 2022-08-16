@@ -17,8 +17,14 @@
 		    :class="project ? 'hidden sm:block absolute bottom-0 left-0 h-1 bg-green-400 transition-transform duration-300 ease-out w-1/2 transform translate-x-double' : 'hidden sm:block absolute bottom-0 right-0 h-1 bg-green-400 transition-transform duration-300 ease-out w-1/2 transform translate-x-double'"
 		  ></div>
 		</div>
-		<div class="max-w-6xl mx-auto bg-white p-16">
-			<form action="" :class="metadata ? 'hidden' : ''">
+		<div class="max-w-6xl mx-auto bg-gray-100 p-16">
+			<div :class="metadata ? 'hidden' : ''">
+				<CreateProject />
+			</div>
+			<div :class="project ? 'hidden' : ''">
+				<CreateMetadata />
+			</div>
+			<!-- <form action="" :class="metadata ? 'hidden' : ''">
 			    <div class="grid gap-6 mb-6 lg:grid-cols-1">
 			        <div>
 			            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Project Name</label>
@@ -89,7 +95,7 @@
 			        </div>
 			    </div>
 			    	<button @click="createMetadata()" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-			</form>
+			</form> -->
 		</div>
 	</div>
 </template>
@@ -98,28 +104,28 @@
 		data: () => ({
 			metadata: false,
 			project: true,
-			params: {
-				name: "",
-				project: "",
-				config: null
-			}
+			// params: {
+			// 	name: "",
+			// 	project: "",
+			// 	config: null
+			// }
 		}),
 		methods: {
-			async createProject() {
-				const data = {
-		            name: this.params.name,
-		            config: JSON.parse(this.params.config)
-		         };
-			    this.$store.dispatch("base/CreateSampleIdentifier", data);
-	        },
-	        async createMetadata() {
-				const data = {
-					project: this.params.project,
-		            name: this.params.name,
-		            config: JSON.parse(this.params.config)
-		         };
-			    this.$store.dispatch("base/CreateMetadata", data);
-	        },
+			// async createProject() {
+			// 	const data = {
+		 //            name: this.params.name,
+		 //            config: JSON.parse(this.params.config)
+		 //         };
+			//     this.$store.dispatch("base/CreateSampleIdentifier", data);
+	  //       },
+	  //       async createMetadata() {
+			// 	const data = {
+			// 		project: this.params.project,
+		 //            name: this.params.name,
+		 //            config: JSON.parse(this.params.config)
+		 //         };
+			//     this.$store.dispatch("base/CreateMetadata", data);
+	  //       },
 	        async isMetadata() {
 	        	this.metadata = true
 	        	this.project = false
