@@ -15,9 +15,11 @@
     "@nuxtjs/svg": "^0.4.0",
     "cookie-universal-nuxt": "^2.2.1",
     "core-js": "^3.15.1",
+    "d3": "^7.6.1",
     "jwt-decode": "^3.1.2",
     "nuxt": "^2.15.7",
     "nuxt-tailvue": "^1.0.95",
+    "papaparse": "^5.3.2",
     "simple-vue-validator": "^0.16.0",
     "vuex-map-fields": "^1.4.1"
   },
