@@ -19,8 +19,8 @@
 	                <nav>
 	                    <ul class="md:flex items-center justify-between text-base pt-4 md:pt-0">
 	                        <li>
-	                        	<button v-if="username" class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Logout</button>
-	                        	<button v-if="username==null" class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Login</button>
+	                        	<button v-if="username != ''" class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Logout</button>
+	                        	<button v-if="username==''" class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Login</button>
 	                        </li>
 	                        <!-- <li><a class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" href="">Treatments</a></li>
 	                        <li><a class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" href="">Blog</a></li>
