@@ -2,7 +2,7 @@ from django.apps import apps
 from rest_framework.response import Response
 from table_factory.api.tasks import UploadData
 from rest_framework import generics, serializers
-from schema_management.models import MetadataHandler
+from schema_management.models import MetadataHandler, ProjectHandler
 from rest_framework.permissions import IsAuthenticated
 from user_management.api.utils import create_uniform_response
 from rest_framework import generics, exceptions, serializers, status
@@ -19,6 +19,26 @@ class UploadMetadataSerializer(serializers.Serializer):
         modelname = value.get("name").lower()
         data = value.get("data")
         app_model = self.context["view"].get_queryset()[modelname.lower()]
+        project_model = self.context["view"].get_queryset()[
+            f"{modelname.split('_')[0]}_{modelname.split('_')[1]}_si"
+        ]
+
+        si_config_data = list(
+            ProjectHandler.objects.filter(
+                table_name=f"{modelname.rsplit('_',2)[0]}_si"
+            ).values_list("config", flat=True)
+        )[0]
+        si_config_data_object = next(
+            filter(lambda i: i["unique"] == "True", si_config_data)
+        )
+        print(si_config_data_object["name"])
+
+        onetoone = list(
+            project_model.objects.values_list(
+                si_config_data_object["name"].lower(), flat=True
+            )
+        )
+        # print(onetoone)
         config_data = list(
             MetadataHandler.objects.filter(table_name=modelname).values_list(
                 "config", flat=True
@@ -41,11 +61,22 @@ class UploadMetadataSerializer(serializers.Serializer):
                         raise exceptions.ValidationError(
                             f"{app_model} doesn't have column {col}"
                         )
+                # print(i["unique"])
                 if i["unique"] == True:
-                    l = list(app_model.objects.values_list(i["name"], flat=True))
-                    if row[i["name"]] in l:
+                    print(row[i["name"].lower()])
+                    if not row[i["name"].lower()] in onetoone:
+                        raise exceptions.ValidationError(
+                            f"{i['name']} dont have sample identifier"
+                        )
+                    l = list(
+                        app_model.objects.values_list(i["name"].lower(), flat=True)
+                    )
+                    print(l)
+                    if row[i["name"].lower()] in l:
                         checks_matching = False
-                        raise exceptions.ValidationError(f"{i['name']} is exists")
+                        raise exceptions.ValidationError(
+                            f"{i['name'].lower()} with {row[i['name'].lower()]} is exists"
+                        )
                 if "options" in i and i["data_type"] == "radio":
                     if not row[i["name"].lower()] in i["options"]:
                         checks_matching = False
