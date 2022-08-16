@@ -19,8 +19,8 @@ export default {
     data: () => ({
     }),
     created() {
-        this.$store.dispatch("auth/GetUser");
         if (this.username) {
+            this.$store.dispatch("auth/GetUser");
             this.$store.dispatch("base/ProjectList");
             this.$store.dispatch("base/ProjectInfo", {name: `${this.username}_${this.name}_si`})
             this.$router.push(`/?name=${this.username}_${this.name}_si`)
@@ -32,9 +32,9 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
+            this.$store.dispatch("auth/GetUser")
             this.$store.dispatch("base/ProjectList")
             if (this.username) {
-                this.$store.dispatch("auth/GetUser")
                 this.$store.dispatch("base/MetadataList", {project_name: this.$route.query.name.split("_")[1]})
                 this.$store.dispatch("base/ProjectInfo", {name: this.$route.query.name})
             }
