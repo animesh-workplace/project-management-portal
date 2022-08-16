@@ -70,8 +70,6 @@
 	    methods: {
 	    	async metaData(value) {
 	    		this.name = this.$route.query.name.split('_')[1]
-	    		console.log(this.baseURL.project_name)
-	    		// let [second] = Object.keys(value)
 	    		this.$router.push(`/metadatainfo?name=${this.$route.query.name}&module=${this.metadataname}&id=${value.id}&${Object.keys(value)}=${Object.values(value)}`)
 
 	    		this.baseURL["module"] = this.metadataname
@@ -80,7 +78,6 @@
 
 	    		this.$store.dispatch("base/MetadataList", {project_name: this.name})
 	    		this.$store.dispatch("base/MetadataInfo", {name: `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.metadataname}_metadata`, m_id: value.id})
-	    		console.log("metadataname",this.metadataname)
 	    	}
 	    },
 	    watch: {
@@ -91,9 +88,6 @@
 					this.keys = []
 				}
 			},
-			// name(value) {
-			// 	this.params.name = value
-			// },
 		},
 	    computed: {
 	        ...mapFields("base", [
