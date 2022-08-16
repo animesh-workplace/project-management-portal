@@ -29,16 +29,16 @@ export default {
     },
     methods: {
         async isUpload() {
-            await this.$router.push(`/create/upload?name=${this.$route.query.name}`)
-            this.dashboard = false
             this.upload = true
+            this.dashboard = ""
+            await this.$router.push(`/create/upload?name=${this.$route.query.name}`)
             await this.$store.dispatch('base/MetadataList', {project_name: this.$route.query.name.split("_")[1]})
             await this.$store.dispatch('base/ProjectConfig', {name: this.$route.query.name.split("_")[1]})
-            await this.$store.dispatch('base/MetadataConfig', {project: this.$route.query.name.split("_")[1], name: this.metadataname})
+            // await this.$store.dispatch('base/MetadataConfig', {project: this.$route.query.name.split("_")[1], name: this.metadataname})
         },
         async isDashboard() {
-            this.dashboard = true
-            this.upload = false
+            // this.upload = false
+            // this.dashboard = false
             this.$store.dispatch('base/ProjectInfo', {name: this.$route.query.name})
             this.$router.push(`/?name=${this.$route.query.name}`)
         }
