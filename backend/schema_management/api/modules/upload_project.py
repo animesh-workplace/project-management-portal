@@ -42,12 +42,15 @@ class UploadProjectSerializer(serializers.Serializer):
                         raise exceptions.ValidationError(
                             f"{app_model} doesn't have column {col}"
                         )
-                if i["unique"] == True:
-                    l = list(app_model.objects.values_list(i["name"], flat=True))
-                    if row[i["name"]] in l:
+                if i["unique"] == "True":
+                    l = list(
+                        app_model.objects.values_list(i["name"].lower(), flat=True)
+                    )
+                    print(l)
+                    if row[i["name"].lower()] in l:
                         checks_matching = False
                         raise exceptions.ValidationError(
-                            f"{i['name']} with {row[i['name']]} is exists"
+                            f"{i['name']} with {row[i['name'].lower()]} is exists"
                         )
                 if "options" in i and i["data_type"] == "radio":
                     if not row[i["name"]] in i["options"]:
