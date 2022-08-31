@@ -18,6 +18,7 @@ class ProjectDetailSerializer(serializers.Serializer):
             project_model = self.context["view"].get_queryset()[name.lower()]
             queryset = project_model.objects.all().values()
             return queryset
+
         raise exceptions.ValidationError(f"{name} is not exists in metadata_model")
 
 
