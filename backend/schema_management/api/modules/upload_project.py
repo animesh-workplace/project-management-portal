@@ -46,7 +46,6 @@ class UploadProjectSerializer(serializers.Serializer):
                     l = list(
                         app_model.objects.values_list(i["name"].lower(), flat=True)
                     )
-                    print(l)
                     if row[i["name"].lower()] in l:
                         checks_matching = False
                         raise exceptions.ValidationError(
