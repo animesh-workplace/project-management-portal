@@ -29,7 +29,7 @@ class UpdateProjectSerializer(serializers.Serializer):
         )[0]
         colmns = []
         for i in config_data:
-            colmns.append(i["name"])
+            colmns.append(i["name"].lower())
         checks_matching = True
         pk_list = list(app_model.objects.values_list("id", flat=True))
         if pk not in pk_list:
@@ -37,7 +37,7 @@ class UpdateProjectSerializer(serializers.Serializer):
             raise exceptions.ValidationError(f"Primary key is not exists")
         for row in data:
             for i in config_data:
-                if not i["name"] in row:
+                if not i["name"].lower() in row:
                     checks_matching = False
                     raise exceptions.ValidationError(
                         f"{app_model} requires column {i['name']}"
@@ -48,11 +48,6 @@ class UpdateProjectSerializer(serializers.Serializer):
                         raise exceptions.ValidationError(
                             f"{app_model} doesn't have column {col}"
                         )
-                # if i["unique"] == True:
-                #     l = list(app_model.objects.values_list(i["id"], flat=True))
-                #     if row[i["id"]] not in l:
-                #         checks_matching = False
-                #         raise exceptions.ValidationError(f"{i['id']} is not exists")
                 if "options" in i and i["data_type"] == "radio":
                     if not row[i["name"]] in i["options"]:
                         checks_matching = False
@@ -66,6 +61,28 @@ class UpdateProjectSerializer(serializers.Serializer):
                             raise exceptions.ValidationError(
                                 f"Select {i['name']} from choices of {i['options']} only. Eg. '{i['name']}': {i['options'][0:2]}"
                             )
+                if i["unique"] == "True":
+                    l = list(
+                        app_model.objects.values_list(i["name"].lower(), flat=True)
+                    )
+                    l1 = list(
+                        app_model.objects.values_list(
+                            i["name"].lower(), flat=True
+                        ).filter(id=pk)
+                    )[0]
+                    print(l1)
+                    print(l)
+                    l.remove(l1)
+                    print(row[i["name"].lower()])
+                    # if row[i["name"].lower()] == l1:
+                    #     self.update_table(modelname, data, app_model, pk)
+                    # return value
+                    # break
+                    if row[i["name"].lower()] in l:
+                        checks_matching = False
+                        raise exceptions.ValidationError(
+                            f"{i['name'].lower()} is exists"
+                        )
         if checks_matching == True:
             self.update_table(modelname, data, app_model, pk)
             return value
