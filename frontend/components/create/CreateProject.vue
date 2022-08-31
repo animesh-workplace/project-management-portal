@@ -108,7 +108,7 @@
 
 			    <button @click="onClick()" type="button" id="buttonArea" class="text-white bg-gray-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add field</button>
 			    <div class="mt-2" id="buttonArea">
-			      <button @click="createSampleIdentifier()" type="submit" id="buttonArea" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-90 sm:w-auto px-44 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+			      <button @click="createSampleIdentifier()" type="button" id="buttonArea" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-90 sm:w-auto px-44 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
 			    </div>
 			</form>
 		</div>
