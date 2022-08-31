@@ -12,6 +12,11 @@
 			  <button @click="csvToJson()" type="button" class="bg-gray-700 text-white rounded-md text-sm w-20">Add file</button>
 			</div>
 		  	<button @click="uploadSample()" type="button" class="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit SI</button>
+		  	<a @click="downloadFile()"
+                target="_blank"
+                class="text-blue-600 dark:text-blue-500 hover:underline cursor-pointer ml-12"
+                >Click here to dounload sample template</a
+            >
 		</form>
 	</div>
 </template>
@@ -53,7 +58,26 @@
 					values[idx]
 				])));
 				await this.$store.dispatch('base/UploadProject', {name: this.$route.query.name, data: this.newData})
-			}
+			},
+			async downloadFile() {
+		      const csv = await this.$axios.post(`http://10.10.6.87/pmp/api/schema/projects/template/`, {name: this.$route.query.name.split("_")[1]})
+		      console.log(csv)
+		      const file_name = csv.data.split("/").at(-1);
+		      const download_path = `http://10.10.6.87/pmp/api/project/download/${file_name}`;
+		      this.$axios({
+		        url: download_path,
+		        method: 'GET',
+		        responseType: 'blob',
+		      }).then((response) => {
+		        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+		        var fileLink = document.createElement('a');
+
+		        fileLink.href = fileURL;
+		        fileLink.setAttribute('download', file_name);
+		        document.body.appendChild(fileLink);
+		        fileLink.click();
+		      });
+		    },
 		},
 	}
 </script>
