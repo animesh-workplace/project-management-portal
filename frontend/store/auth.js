@@ -81,7 +81,6 @@ export const actions = {
             const response = await this.$axios.$post('/info/')
             await commit('SET_USERNAME', response.data.username)
             await commit('SET_PROFILE', response.data)
-            console.log(response.data)
         } catch (err) {
             this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
         }
@@ -147,7 +146,6 @@ export const actions = {
         } catch (err) {
             await commit('SET_AUTHENTICATION', false)
             await commit('SET_REFRESH_TOKEN', false)
-            console.log(err)
         }
     },
 }
