@@ -36,7 +36,7 @@ class DeleteMeatadataView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = apps.get_app_config("table_factory").models
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.serializer = self.get_serializer(data=request.data)
         if self.serializer.is_valid():
             return self.get_response()
