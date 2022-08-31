@@ -13,6 +13,7 @@ from .modules.create_metadata import CreateMetadataView
 from .modules.update_metadata import UpdateMetadataView
 from .modules.delete_metadata import DeleteMeatadataView
 from .modules.remove_project_info import DeleteProjectView
+from .modules.download_template import DownloadProjectTemplate, DownloadMetadataTemplate
 
 
 urlpatterns = [
@@ -37,6 +38,11 @@ urlpatterns = [
                 path(
                     "delete/", DeleteMeatadataView.as_view(), name="delete-metadata-api"
                 ),
+                path(
+                    "template/",
+                    DownloadMetadataTemplate.as_view(),
+                    name="metadata-template-api",
+                ),
             ]
         ),
     ),
@@ -52,6 +58,11 @@ urlpatterns = [
                 path("names/", ProjectNamesView.as_view(), name="project-names-api"),
                 path(
                     "delete/", DeleteProjectView.as_view(), name="delete-metadata-api"
+                ),
+                path(
+                    "template/",
+                    DownloadProjectTemplate.as_view(),
+                    name="project-template-api",
                 ),
             ]
         ),
