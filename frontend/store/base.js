@@ -123,4 +123,36 @@ export const actions = {
             this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
         }
 	},
+	async UpdateProject({ commit, dispatch }, payload) {
+		try {
+            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/schema/projects/update/', payload)
+            this.$notification.show(response.code, response.message, 'SUCCESS')
+        } catch (err) {
+            this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
+        }
+	},
+	async UpdateMetadata({ commit, dispatch }, payload) {
+		try {
+            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/schema/metadata/update/', payload)
+            this.$notification.show(response.code, response.message, 'SUCCESS')
+        } catch (err) {
+            this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
+        }
+	},
+	async DeleteSampleIdentifier({ commit, dispatch }, payload) {
+		try {
+            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/schema/projects/delete/', payload)
+            this.$notification.show(response.code, response.message, 'SUCCESS')
+        } catch (err) {
+            this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
+        }
+	},
+	async DeleteMetadata({ commit, dispatch }, payload) {
+		try {
+            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/schema/metadata/delete/', payload)
+            this.$notification.show(response.code, response.message, 'SUCCESS')
+        } catch (err) {
+            this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
+        }
+	},
 };
