@@ -22,17 +22,33 @@ class UpdateMetadataSerializer(serializers.Serializer):
         pk = value.get("pk")
         data = value.get("data")
         app_model = self.context["view"].get_queryset()[modelname.lower()]
+        split_modelname = modelname.split("_")
+        project_name = f"{split_modelname[0]}_{split_modelname[1]}_si"
+        project_model = self.context["view"].get_queryset()[project_name.lower()]
+
+        print(project_model)
         config_data = list(
-            MetadataHandler.objects.filter(table_name=modelname).values_list(
+            MetadataHandler.objects.filter(table_name__iexact=modelname).values_list(
                 "config", flat=True
             )
         )[0]
+
+        project_unique_field = (
+            config_data[0]["name"].replace(config_data[0]["name"][-3:], "").lower()
+        )
+        project_unique_values = list(
+            project_model.objects.values_list(project_unique_field, flat=True)
+        )
+        print(project_unique_values)
+        print(config_data[0]["name"].replace(config_data[0]["name"][-3:], ""))
+        print(app_model)
         colmns = []
         for i in config_data:
             colmns.append(i["name"].lower())
         checks_matching = True
-        pk_list = list(app_model.objects.values_list("id", flat=True))
-        if pk not in pk_list:
+        pk_value = (app_model.objects.values("id").filter(id=pk))[0]
+        pk_list = app_model.objects.values_list("id", flat=True)
+        if pk_value["id"] not in pk_list:
             checks_matching = False
             raise exceptions.ValidationError(f"{pk} is not exists")
         for row in data:
@@ -48,11 +64,29 @@ class UpdateMetadataSerializer(serializers.Serializer):
                         raise exceptions.ValidationError(
                             f"{app_model} doesn't have column {col}"
                         )
-                # if i["unique"] == True:
-                #     l = list(app_model.objects.values_list(i["id"], flat=True))
-                #     if row[i["id"]] not in l:
-                #         checks_matching = False
-                #         raise exceptions.ValidationError(f"{i['id']} is not exists")
+                # print(col)
+                if i["unique"] == True:
+                    l = list(
+                        app_model.objects.values_list(i["name"].lower(), flat=True)
+                    )
+                    print(l)
+                    l1 = list(
+                        app_model.objects.values_list(
+                            i["name"].lower(), flat=True
+                        ).filter(id=pk)
+                    )[0]
+                    l.remove(l1)
+
+                    if row[i["name"].lower()] in l:
+                        checks_matching = False
+                        raise exceptions.ValidationError(
+                            f"{i['name'].lower()} with value '{row[i['name'].lower()]}' exists in '{modelname.replace('_', ' ')}'"
+                        )
+                    if row[i["name"].lower()] not in project_unique_values:
+                        checks_matching = False
+                        raise exceptions.ValidationError(
+                            f"{i['name'].lower()} with value '{row[i['name'].lower()]}' not exists in '{project_name.replace('_', ' ')}'"
+                        )
                 if "options" in i and i["data_type"] == "radio":
                     if not row[i["name"].lower()] in i["options"]:
                         checks_matching = False

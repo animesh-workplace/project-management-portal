@@ -3,7 +3,7 @@
 		<header class="lg:px-16 px-8 bg-green-500 shadow-md py-4 md:py-0">
 	        <div class="container mx-auto flex flex-wrap items-center">
 	            <div class="flex-1 flex justify-between items-center">
-	                <a href="" class="text-xl font-semibold text-green-100 hover:text-white tracking-normal">Project Management</a>
+	                <a class="text-xl font-semibold text-green-100 hover:text-white tracking-normal">Project Management</a>
 	            </div>
 
 	            <label for="menu-toggle" class="pointer-cursor md:hidden block">
@@ -18,9 +18,11 @@
 	            <div class="hidden md:flex md:items-center md:w-auto w-full" id="menu">
 	                <nav>
 	                    <ul class="md:flex items-center justify-between text-base pt-4 md:pt-0">
-	                        <li>
-	                        	<button v-if="username != ''" class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Logout</button>
-	                        	<button v-if="username==''" class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Login</button>
+	                        <li v-if="username">
+	                        	<button class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="logoutHandler()">Logout</button>
+	                        </li>
+	                        <li v-if="username==''">
+	                        	<button class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" @click="loginPage()">Login</button>
 	                        </li>
 	                        <!-- <li><a class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" href="">Treatments</a></li>
 	                        <li><a class="md:px-4 py-2 md:py-4 px-0 block text-green-100 hover:text-white md:hover:bg-green-800" href="">Blog</a></li>
@@ -44,7 +46,7 @@
 	                            </ul>
 	                        </li> -->
 	                        <li>
-	                            <a href="" class="md:ml-4 flex items-center justify-start pointer-cursor">
+	                            <a class="md:ml-4 flex items-center justify-start pointer-cursor">
 	                                <img class="rounded-full w-6 h-6 bg-green-800" src="https://unavatar.now.sh/dalton@sutton.io">
 	                            </a>
 	                        </li>
@@ -69,6 +71,9 @@
 	    methods: {
 	        logoutHandler() {
               this.$store.dispatch("auth/StartLogout");
+          },
+          loginPage() {
+              this.$router.push("/auth/login");
           },
 	    },
 	};

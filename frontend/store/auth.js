@@ -53,7 +53,10 @@ export const actions = {
             await dispatch('SetTokenExpiration', this.$dayjs(response.expiration).diff(this.$dayjs()))
             await dispatch('GetUser')
             await commit('SET_AUTHENTICATION', true)
-            this.$router.push('/')
+            // await dispatch("base/ProjectList", {name: state.username});
+            // console.log("username",state.username)
+            // console.log("project",state.name)
+            this.$router.push(`/`)
             this.$notification.show(response.code, response.message, 'SUCCESS')
         } catch (err) {
             this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')

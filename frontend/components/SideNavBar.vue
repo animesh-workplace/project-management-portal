@@ -142,19 +142,26 @@
 	    },
 	    methods: {
 	    	async namefunction(value) {
+	    		this.$store.dispatch("auth/GetUser");
 	    		this.siColor = value
 	    		this.createColor = false
-	    		this.name = `${this.username}_${value}_si`
-	    		this.$store.dispatch("base/ProjectInfo", {name: this.name})
+	    		const name = `${this.username}_${value}_si`
+	    		this.$store.dispatch("base/ProjectInfo", {name: name})
+	    		this.$store.dispatch("base/MetadataList", {project_name: value})
 	    		this.colorchange = true
-	    		this.baseURL["project_name"]=this.name
-	    		this.$router.push(`/?name=${this.name}`)
+	    		this.$router.push(`/?name=${name}`)
 	    	},
 	    	async createFinction(value) {
 	    		this.createColor = true
 	    		this.siColor = ""
 	    		this.$router.push('/create/sampleidentifier')
 	    	}
+	    },
+
+	    mounted() {
+	    	this.$nextTick(() => {
+	    		this.$store.dispatch("auth/GetUser");
+	    	})
 	    }
 	};
 </script>

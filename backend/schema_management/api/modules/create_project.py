@@ -16,7 +16,11 @@ class CreateProjectSerializer(serializers.Serializer):
 
     def validate_name(self, name):
         user = self.context["request"].user
-        table_name = self.get_name("project", user, name)
+        table_name = self.get_name(
+            "project",
+            user,
+            name.lower().replace(" ", "").replace("_", "").replace("-", ""),
+        )
         # Check if the name exists in the queryset database
         if (
             self.context["view"]
@@ -24,11 +28,15 @@ class CreateProjectSerializer(serializers.Serializer):
             .objects.filter(table_name__iexact=table_name)
             .exists()
         ):
-            raise exceptions.ValidationError("Already exists")
+            raise exceptions.ValidationError(
+                f'{name.lower().replace(" ", "").replace("_", "").replace("-", "")} already exists'
+            )
         return name
 
     def validate(self, value):
-        name = value.get("name").lower().replace(" ", "")
+        name = (
+            value.get("name").lower().replace(" ", "").replace("_", "").replace("-", "")
+        )
         config = value.get("config")
         user = self.context["request"].user
         table_name = self.get_name("project", user, name)

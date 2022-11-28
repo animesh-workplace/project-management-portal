@@ -25,22 +25,20 @@ class UploadMetadataSerializer(serializers.Serializer):
 
         si_config_data = list(
             ProjectHandler.objects.filter(
-                table_name=f"{modelname.rsplit('_',2)[0]}_si"
+                table_name__iexact=f"{modelname.rsplit('_',2)[0]}_si"
             ).values_list("config", flat=True)
         )[0]
         si_config_data_object = next(
             filter(lambda i: i["unique"] == "True", si_config_data)
         )
-        print(si_config_data_object["name"])
 
         onetoone = list(
             project_model.objects.values_list(
                 si_config_data_object["name"].lower(), flat=True
             )
         )
-        # print(onetoone)
         config_data = list(
-            MetadataHandler.objects.filter(table_name=modelname).values_list(
+            MetadataHandler.objects.filter(table_name__iexact=modelname).values_list(
                 "config", flat=True
             )
         )[0]
@@ -61,9 +59,7 @@ class UploadMetadataSerializer(serializers.Serializer):
                         raise exceptions.ValidationError(
                             f"{app_model} doesn't have column {col}"
                         )
-                # print(i["unique"])
                 if i["unique"] == True:
-                    print(row[i["name"].lower()])
                     if not row[i["name"].lower()] in onetoone:
                         raise exceptions.ValidationError(
                             f"{i['name']} dont have sample identifier"
@@ -71,7 +67,6 @@ class UploadMetadataSerializer(serializers.Serializer):
                     l = list(
                         app_model.objects.values_list(i["name"].lower(), flat=True)
                     )
-                    print(l)
                     if row[i["name"].lower()] in l:
                         checks_matching = False
                         raise exceptions.ValidationError(

@@ -14,7 +14,7 @@ class ProjectDetailSerializer(serializers.Serializer):
 
     def validate(self, value):
         name = value.get("name")
-        if ProjectHandler.objects.filter(table_name=name).exists():
+        if ProjectHandler.objects.filter(table_name__iexact=name).exists():
             project_model = self.context["view"].get_queryset()[name.lower()]
             queryset = project_model.objects.all().values()
             return queryset

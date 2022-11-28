@@ -15,6 +15,10 @@ export const state = () => ({
 
 	projectConfig: {},
 	metadataConfig: [],
+
+	projectDataToUpload: [],
+	projectDataToUpdate: []
+
 });
 
 export const getters = {
@@ -43,6 +47,13 @@ export const mutations = {
 	},
 	SET_MetadataConfig(state, payload) {
 		state.metadataConfig = payload
+	},
+
+	SET_ProjectToUpload(state, payload) {
+		state.projectDataToUpload = payload
+	},
+	SET_ProjectToUpdate(state, payload) {
+		state.projectDataToUpdate = payload
 	},
 	updateField,
 };
@@ -107,9 +118,27 @@ export const actions = {
 		);
 		await commit("SET_MetadataConfig", response);
 	},
+	async SeperateProjectData({ commit, dispatch }, payload) {
+		try {
+	        const response = await this.$axios.$post('http://10.10.6.87/pmp/api/schema/projects/seperate/', payload)
+	        await commit("SET_ProjectToUpload", response.dataToUpload);
+	        await commit("SET_ProjectToUpdate", response.dataToUpdate);
+		} catch (err) {
+            this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
+        }
+	},
+	async BulkUpdateProject({ commit, dispatch }, payload) {
+		try {
+            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/schema/projects/bulk-update/', payload)
+            this.$notification.show(response.code, response.message, 'SUCCESS')
+        } catch (err) {
+            this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')
+        }
+	},
 	async UploadProject({ commit, dispatch }, payload) {
 		try {
-            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/schema/projects/upload/', payload)
+            const response = await this.$axios.$post('http://10.10.6.87/pmp/api/schema/projects/upload/', payload
+			)
             this.$notification.show(response.code, response.message, 'SUCCESS')
         } catch (err) {
             this.$notification.show(err.response.statusText, Object.values(err.response.data)[0], 'ERROR')

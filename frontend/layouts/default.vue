@@ -5,7 +5,7 @@
             <div class="flex justify-right">
                 <SideNavBar/>
             </div>
-            <div class="col-span-12 pt-4 pr-2">
+            <div class="col-span-12 pt-2 ml-4 mr-4">
                 <Nuxt />
             </div>
         </div>
@@ -17,23 +17,21 @@ export default {
     name: "default",
     data: () => ({
     }),
-    created() {
-        this.$store.dispatch("auth/GetUser");
+    async created() {
         if (this.username) {
-            this.$store.dispatch("base/ProjectList");
-            this.$store.dispatch("base/ProjectInfo", {name: `${this.username}_${this.name}_si`})
-            this.$router.push(`/?name=${this.username}_${this.name}_si`)
+            await this.$store.dispatch("base/ProjectList", {name: this.username});
+            await this.$router.push(`/?name=${this.username}_${this.name}_si`)
+            await this.$store.dispatch("base/ProjectInfo", {name: `${this.username}_${this.name}_si`})
+            await this.$store.dispatch("base/MetadataList", {project_name: this.$route.query.name.split("_")[1]})
         }
     },
     computed: {
         ...mapFields("base", ["name"]),
         ...mapFields("auth", ["username"]),
     },
-    mounted() {
-        this.$nextTick(() => {
-            this.$store.dispatch("auth/GetUser")
-            this.$store.dispatch("base/ProjectList")     
-            if (this.username) {
+    async mounted() {
+        await this.$nextTick(() => {
+            if (this.$route.query.name) {
                 this.$store.dispatch("base/MetadataList", {project_name: this.$route.query.name.split("_")[1]})
                 this.$store.dispatch("base/ProjectInfo", {name: this.$route.query.name})
             }

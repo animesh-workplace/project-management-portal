@@ -18,15 +18,23 @@ class CreateMetadataSerializer(serializers.Serializer):
 
     def validate_project(self, project):
         user = self.context["request"].user
-        table_name = self.get_name("project", user, project)
+        table_name = self.get_name(
+            "project",
+            user,
+            project.lower().replace(" ", "").replace("_", "").replace("-", ""),
+        )
         # Check if the name exists in the ProjectHandler database
         if ProjectHandler.objects.filter(table_name__iexact=table_name).exists():
             return project
         raise exceptions.ValidationError("Project doesnot exists")
 
     def check_name(self, user, project, name):
-        table_name = self.get_name("metadata", user, project, name)
-        print(table_name)
+        table_name = self.get_name(
+            "metadata",
+            user,
+            project.lower().replace(" ", "").replace("_", "").replace("-", ""),
+            name.lower().replace(" ", "").replace("_", "").replace("-", ""),
+        )
         # Check if the name exists in the queryset database
         if (
             self.context["view"]
@@ -42,7 +50,6 @@ class CreateMetadataSerializer(serializers.Serializer):
         config = value.get("config")
         project = value.get("project")
         user = self.context["request"].user
-        print()
         if self.check_name(user, project, name):
             table_name = self.get_name("metadata", user, project, name)
             project_instance = self.get_project(self.get_name("project", user, project))

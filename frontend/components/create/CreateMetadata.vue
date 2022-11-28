@@ -2,19 +2,19 @@
 	<div>
 		<div class=" grid grid-cols-1 gap-4 place-items-center">
 			<form>
-			    <h1 class='text-center text-xl font-bold'>Model Schema</h1>
+			    <!-- <h1 class='text-center text-xl font-bold'>Model Schema</h1> -->
 			    <div>
 			    	<label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Project Name</label>
 		            <input v-model="params.project" type="text" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Test" required>
 		        </div>
-		        <h1 class='text-center text-xl font-bold'>Metadata Schema</h1>
+		        <h1 class='text-center text-xl font-bold'>Create metadata</h1>
 		        <div>
 			    	<label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Metadata Name</label>
 		            <input v-model="params.name" type="text" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Test" required>
 		        </div>
 
 		        <div v-for="(element, index) in params.config">
-		        	<h2 class='text-center text-xl font-bold mt-2' id="field1">Field Schema {{index+1}}</h2>
+		        	<h2 class='text-center text-xl font-bold mt-2' id="field1">Data register {{index+1}}</h2>
 				    <div>
 				    	<label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Fieldname</label>
 			            <input v-model="element['name']" name="name" type="text" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Test" required>

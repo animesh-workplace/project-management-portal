@@ -15,7 +15,7 @@
 		  	<a @click="downloadMetadataTemplate()"
                 target="_blank"
                 class="text-blue-600 dark:text-blue-500 hover:underline cursor-pointer ml-12"
-                >Click here to dounload sample template</a
+                >Click here to download sample template</a
             >
 		</form>
 	</div>

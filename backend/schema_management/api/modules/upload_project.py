@@ -21,7 +21,7 @@ class UploadProjectSerializer(serializers.Serializer):
         # app_model = app_models.models[modelname.lower()]
         app_model = self.context["view"].get_queryset()[modelname.lower()]
         config_data = list(
-            ProjectHandler.objects.filter(table_name=modelname).values_list(
+            ProjectHandler.objects.filter(table_name__iexact=modelname).values_list(
                 "config", flat=True
             )
         )[0]
@@ -29,6 +29,7 @@ class UploadProjectSerializer(serializers.Serializer):
         for i in config_data:
             colmns.append(i["name"].lower())
         checks_matching = True
+        update_data = []
         for row in data:
             for i in config_data:
                 if not i["name"].lower() in row:
@@ -47,10 +48,13 @@ class UploadProjectSerializer(serializers.Serializer):
                         app_model.objects.values_list(i["name"].lower(), flat=True)
                     )
                     if row[i["name"].lower()] in l:
-                        checks_matching = False
-                        raise exceptions.ValidationError(
-                            f"{i['name']} with {row[i['name'].lower()]} is exists"
-                        )
+                        # checks_matching = False
+                        pop1 = data.pop(data.index(row))
+                        update_data.append(pop1)
+                        # raise exceptions.ValidationError(
+                        #     f"{i['name']} with {row[i['name'].lower()]} is exists"
+                        # )
+                        break
                 if "options" in i and i["data_type"] == "radio":
                     if not row[i["name"]] in i["options"]:
                         checks_matching = False
@@ -94,3 +98,76 @@ class UploadProjectView(generics.CreateAPIView):
         }
         response = Response(data, status=status.HTTP_200_OK)
         return response
+
+
+class SeperateDataSerializer(serializers.Serializer):
+    data = serializers.JSONField()
+    name = serializers.CharField()
+
+    class Meta:
+        fields = None
+
+    def validate(self, value):
+        modelname = value.get("name").lower()
+        data = value.get("data")
+        app_model = self.context["view"].get_queryset()[modelname.lower()]
+        print(modelname)
+        config_data = list(
+            ProjectHandler.objects.filter(table_name__iexact=modelname).values_list(
+                "config", flat=True
+            )
+        )[0]
+        colmns = []
+        for i in config_data:
+            colmns.append(i["name"].lower())
+        update_data = []
+        for row in data:
+            for i in config_data:
+                if not i["name"].lower() in row:
+                    checks_matching = False
+                    raise exceptions.ValidationError(
+                        f"{app_model} requires column {i['name']}"
+                    )
+                for col in row.keys():
+                    if not col in colmns:
+                        checks_matching = False
+                        raise exceptions.ValidationError(
+                            f"{app_model} doesn't have column {col}"
+                        )
+                if i["unique"] == "True":
+                    l = list(
+                        app_model.objects.values_list(i["name"].lower(), flat=True)
+                    )
+                    if row[i["name"].lower()] in l:
+                        update_data.append(row)
+                        break
+                if "options" in i and i["data_type"] == "radio":
+                    if not row[i["name"]] in i["options"]:
+                        checks_matching = False
+                        raise exceptions.ValidationError(
+                            f"Select {i['name']} from any one of {i['options']} only. Eg. '{i['name']}': '{i['options'][0]}'"
+                        )
+                if "options" in i and i["data_type"] == "multiradio":
+                    for j in row[i["name"]]:
+                        if not j in i["options"]:
+                            checks_matching = False
+                            raise exceptions.ValidationError(
+                                f"Select {i['name']} from choices of {i['options']} only. Eg. '{i['name']}': {i['options'][0:2]}"
+                            )
+        upload_data = [i for i in data if i not in update_data]
+        return {"dataToUpdate": update_data, "dataToUpload": upload_data}
+
+
+class SeperateDataView(generics.CreateAPIView):
+    queryset = apps.get_app_config("table_factory").models
+    serializer_class = SeperateDataSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        self.serializer = self.get_serializer(data=request.data)
+        if self.serializer.is_valid():
+            return Response(self.serializer.validated_data)
+        return Response(
+            create_uniform_response(self.serializer.errors),
+            status=status.HTTP_406_NOT_ACCEPTABLE,
+        )

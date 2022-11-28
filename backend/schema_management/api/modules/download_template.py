@@ -48,7 +48,7 @@ class DownloadProjectTemplateSerializer(serializers.Serializer):
             .objects.filter(table_name__iexact=tablename)
             .values_list("config", flat=True)[0]
         )
-        path = f"{BASE_DIR}/downloads/projects_templates/{name}{new_file}_template.csv"
+        path = f"{BASE_DIR}/downloads/projects_templates/{name}_template.csv"
         template_columns = []
         for i in queryset:
             template_columns.append(i["name"])
@@ -106,7 +106,9 @@ class DownloadMetadataTemplateSerializer(serializers.Serializer):
             .objects.filter(table_name__iexact=tablename)
             .values_list("config", flat=True)[0]
         )
-        metadatapath = f"{BASE_DIR}/downloads/metadata_templates/{project}_{name}{new_file}template.csv"
+        metadatapath = (
+            f"{BASE_DIR}/downloads/metadata_templates/{project}_{name}_template.csv"
+        )
         template_columns = []
         for i in queryset:
             template_columns.append(i["name"])

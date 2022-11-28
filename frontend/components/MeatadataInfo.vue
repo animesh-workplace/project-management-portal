@@ -49,7 +49,7 @@
 		    {{ event }}
 		  </div>
 		</div>
-		<div v-if="view" class="flex items-center mt-4">
+		<div v-if="view" class="mx-auto flex items-center mt-4">
 			<div class="mx-auto grid gap-6 mb-6 lg:grid-cols-4 flex justify-center items-center">
 		        <div v-for="event in keys.slice(1,)">
 		            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 capitalize">{{event.replaceAll("_"," ")}}</label>
@@ -141,43 +141,6 @@
 	            </button>
 		    </div>
 		</div>
-		<div class="flex items-center">
-		  	<div class="max-w-7xl mx-auto">
-	            <div class="flex flex-col">
-	                <div class="overflow-x-auto shadow-md sm:rounded-lg">
-	                    <div class="inline-block w-full align-middle">
-	                    	<h1 v-if="keys.length==0">Metadata is empty</h1>
-	                        <table
-	                            class="w-full divide-y divide-gray-200 dark:divide-gray-700" v-if="keys.length>0"
-	                        >
-	                            <thead class="bg-green-400 dark:bg-gray-700">
-	                                <tr class="bg-primary text-center">
-	                                    <th
-	                                        class="py-3 px-6 text-lg font-medium tracking-wider text-white capitalize dark:text-gray-400" v-for="event in keys"
-	                                    >
-	                                        {{ event.replaceAll("_"," ") }}
-	                                    </th>
-	                                </tr>
-	                            </thead>
-	                            <tbody
-	                                class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
-	                            >
-	                                <tr
-	                                    class="hover:bg-gray-100 dark:hover:bg-gray-700 text-center"
-	                                >
-	                                    <td
-	                                        class="py-2 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white" v-for="event in metadataInfo" :key="event.id"
-	                                    >
-	                                        {{ event }}
-	                                    </td>
-	                                </tr>
-	                            </tbody>
-	                        </table>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-		</div>
 	</div>
 </template>
 <script>
@@ -200,6 +163,8 @@
 	    	date: "2022-08-07",
 	    	showEditmetadata: true
 	    }),
+
+
 	    methods: {
 	    	async metaData(value) {
 	    		this.view = true
@@ -209,7 +174,7 @@
 	    		this.$store.dispatch("base/MetadataInfo", this.params)
 	    		this.editData = this.metadataInfo
 	    		this.$store.dispatch("base/MetadataConfig", {project: this.$route.query.name.split("_")[1], name: value.toLowerCase()})
-	    		this.$router.push(`/metadatainfo?name=${this.$route.query.name}&module=${value}&id=${this.$route.query.id}`)
+	    		this.$router.push(`/metadatainfo?name=${this.$route.query.name}&module=${value}&id=${this.$route.query.id}&${Object.keys(this.$route.query).pop()}=${Object.values(this.$route.query).pop()}`)
 	    	},
 	    	async editMetdataForm() {
 	    		this.view = false
@@ -222,8 +187,9 @@
 	    		this.$store.dispatch("base/MetadataConfig", {project: this.$route.query.name.split("_")[1], name: this.$route.query.module.toLowerCase()})
 	    	},
 	    	async editMetdata() {
+	    		const pk = this.editData.id
 	    		delete this.editData.id
-	    		await this.$store.dispatch("base/UpdateMetadata", {name: `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.$route.query.module.toLowerCase()}_metadata`, pk: this.$route.query.id, data: [this.editData]})
+	    		await this.$store.dispatch("base/UpdateMetadata", {name: `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.$route.query.module.toLowerCase()}_metadata`, pk: pk, data: [this.editData]})
 	    		await this.$store.dispatch("base/MetadataInfo", this.params)
 	    		this.view = true
 	    		this.edit = false
@@ -241,8 +207,9 @@
 	    		this.edit = false
 			},
 			async deleteMeatadata() {
-				this.$store.dispatch("base/DeleteMetadata", {"name": `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.$route.query.module.toLowerCase()}_metadata`, "pk": this.queryValues[0]})
+				await this.$store.dispatch("base/DeleteMetadata", {"name": `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.$route.query.module.toLowerCase()}_metadata`, "pk": this.queryValues[0]})
 				this.isShowing = false
+				this.$store.dispatch("base/MetadataInfo", this.params)
 			},
 	    },
 	    watch: {
@@ -265,18 +232,20 @@
 	        ]),
 	        ...mapFields("auth", ["username"])
 	    },
-	    mounted() {
-	    	this.$nextTick(() => {
- 	           	this.$store.dispatch("base/MetadataList", {project_name: this.$route.query.name.split("_")[1]})
- 	           	this.params.name = `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.$route.query.module}_metadata`
- 	           	this.params.m_id = this.$route.query.id
+	    async mounted() {
+	    	await this.$nextTick(() => {
+	    		if (this.$route.query.name) {
+	 	           	this.$store.dispatch("base/MetadataList", {project_name: this.$route.query.name.split("_")[1]})
+	 	           	this.params.name = `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.$route.query.module}_metadata`
+	 	           	this.params.name = `${this.username}_${this.$route.query.name.split('_')[1]}_${this.metadataname}_metadata`
+	 	           	this.params.m_id = this.$route.query.id
 
- 	           	this.$store.dispatch("base/MetadataInfo", this.params)
-	    		this.editData = this.metadataInfo
-	    		console.log(Object.keys(this.metadataInfo)[0])
- 	           	this.queryParams = true
-	    		this.queryKeys = Object.values(this.$route.query).pop().split(",")
-	    		this.queryValues = this.$route.query[Object.keys(this.$route.query).pop()].split(",")
+	 	           	this.$store.dispatch("base/MetadataInfo", {name: `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.$route.query.module}_metadata`, m_id: this.$route.query.id})
+		    		this.editData = this.metadataInfo
+	 	           	this.queryParams = true
+		    		this.queryKeys = Object.keys(this.$route.query).pop().split(",")
+		    		this.queryValues = this.$route.query[Object.keys(this.$route.query).pop()].split(",")
+	    		}
 			})
 	    },
 	};

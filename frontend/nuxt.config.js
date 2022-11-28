@@ -1,3 +1,4 @@
+// import serveStatic from 'serve-static'
 export default {
   head: {
     title: 'pmp',
@@ -31,12 +32,18 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-    axios: {
+  axios: {
     baseURL: "http://10.10.6.87/pmp/api/user",
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    extend (config, { isDev, isClient }) {
+      target: 'node'
+      config.node = {
+        fs: 'empty'
+      }
+    }
   },
   server: {
     port: 3002,
@@ -44,4 +51,14 @@ export default {
   router: {
     base: "/pmp/",
   },
+  // serverMiddleware: [
+  //   // Will register redirect-ssl npm package
+  //   'redirect-ssl',
+
+  //   // Will register file from project server-middleware directory to handle /server-middleware/* requires
+  //   // { path: '/server-middleware', handler: '~/server-middleware/index.js' },
+
+  //   // We can create custom instances too
+  //   { path: '/static2', handler: serveStatic(__dirname + '/static2') }
+  // ]
 }

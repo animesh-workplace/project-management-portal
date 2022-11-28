@@ -103,6 +103,7 @@
 			queryKeys.forEach((key, i) => this.result[key] = queryValues[i]);
 			this.params["name"] = this.$route.query.name
 			this.params["pk"] = this.$route.query.id
+			
 			this.params["data"] = [this.result]
 			console.log(this.params)
 	    	this.$nextTick(() => {

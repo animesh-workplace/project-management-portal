@@ -115,17 +115,18 @@
 	        values: [],
 	        isShowing: false
 	    }),
+	    async created() {
+    		if (this.$route.query.name) {
+				await this.$store.dispatch("base/MetadataList", {project_name: this.$route.query.name.split("_")[1]})
+    		}
+	    },
 	    methods: {
 	    	async metaData(value) {
-	    		this.name = this.$route.query.name.split('_')[1]
-	    		this.$router.push(`/metadatainfo?name=${this.$route.query.name}&module=${this.metadataname}&id=${value.id}&${Object.keys(value)}=${Object.values(value)}`)
-
-	    		this.baseURL["module"] = this.metadataname
-	    		this.baseURL["id"] = value.id
-	    		this.baseURL[Object.keys(value)] = Object.values(value)
-
-	    		this.$store.dispatch("base/MetadataList", {project_name: this.name})
-	    		this.$store.dispatch("base/MetadataInfo", {name: `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.metadataname}_metadata`, m_id: value.id})
+    			await this.$store.dispatch("base/MetadataList", {project_name: this.$route.query.name.split("_")[1]})
+    			console.log(this.metadataname)
+	    		await this.$store.dispatch("base/MetadataInfo", {name: `${this.$route.query.name.split("_")[0]}_${this.$route.query.name.split("_")[1]}_${this.metadataname}_metadata`, m_id: value[Object.keys(value)[1]]})
+	    		await this.$router.push(`/_metadatainfo?name=${this.$route.query.name}&module=${this.metadataname}&id=${value[Object.keys(value)[1]]}&${Object.keys(value)}=${Object.values(value)}`)
+	    		console.log(value[Object.keys(value)[1]])
 	    	},
 	    	updateSI(value) {
 	    		this.$router.push(`/update/sample_identifier?name=${this.$route.query.name}&module=${this.metadataname}&id=${value.id}&${Object.keys(value)}=${Object.values(value)}`)
@@ -138,7 +139,8 @@
 				this.isShowing = false
 			},
 			async deleteSampleIdentifier() {
-				this.$store.dispatch("base/DeleteSampleIdentifier", {"name": this.$route.query.name, "pk": this.values[0]})
+				this.$store.dispatch("base/DeleteSampleIdentifier", {name: this.$route.query.name, pk: this.values[0]})
+				this.$store.dispatch("base/ProjectInfo", this.params)
 				this.isShowing = false
 			},
 	    },
@@ -153,21 +155,24 @@
 		},
 	    computed: {
 	        ...mapFields("base", [
-	        	"baseURL",
 	        	"name",
 	        	"metadataname",
+	        	"metadataInfo",
 	            "projectList",
+	            "metadataList",
 	            "projectList_loded",
 	            "projectInfo",
 	            "projectInfo_loaded"
 	        ]),
+	        ...mapFields("auth", ["username"]),
 	    },
-	    mounted() {
-	    	this.$nextTick(() => {
-	    		this.name = this.name
-				this.params.name = `${this.$route.query.name}`
-				this.$store.dispatch("base/ProjectList")
- 	           	this.$store.dispatch("base/ProjectInfo", this.params)
+	    async mounted() {
+	    	await this.$nextTick(() => {
+ 	           	if (this.$route.query.name) {
+					this.params.name = `${this.$route.query.name}`
+					this.$store.dispatch("base/MetadataList", {project_name: this.$route.query.name.split("_")[1]})
+					this.$store.dispatch("base/ProjectList",{name: this.$route.query.name.split("_")[0]})
+ 	           	}
 			})
 	    },
 	};

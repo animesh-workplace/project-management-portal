@@ -85,6 +85,10 @@ class TableSchema(models.Model):
         return self._factory.get_model()
 
 
+def user_directory_path(instance, filename):
+    return "{0}/{1}".format(instance.username.username, filename)
+
+
 class FieldSchema(models.Model):
     _MAX_LENGTH_DATA_TYPES = ("character",)
     _PROHIBITED_NAMES = ("__module__", "_schema", "_declared")
@@ -99,6 +103,7 @@ class FieldSchema(models.Model):
     data_type = models.CharField(
         max_length=10, choices=FieldFactory.data_type_choices(), editable=False
     )
+    # upload_to = models.CharField(default=user_directory_path)
 
     class Meta:
         unique_together = (("name", "model_schema"),)

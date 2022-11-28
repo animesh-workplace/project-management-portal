@@ -112,32 +112,18 @@
             password: "",
           }
       }),
+      computed: {
+        ...mapFields("base", ["name"]),
+        ...mapFields("auth", ["username"]),
+      },
       methods: {
-          loginHandler() {
-              this.$store.dispatch("auth/StartLogin", this.params);
+          async loginHandler() {
+              await this.$store.dispatch("auth/StartLogin", this.params);
+              // await this.$store.dispatch("auth/GetUser")
+              await this.$store.dispatch("base/ProjectList",{name: this.username})
+              await this.$store.dispatch("base/ProjectInfo", {name: `${this.username}_${this.name}_si`})
+              await this.$router.push(`/?name=${this.username}_${this.name}_si`)
           },
       },
   };
-// export default {
-//    name: 'Login',
-//    data() {
-//       return {
-//          username: null,
-//          password: null,
-//       }
-//    },
-//    methods: {
-//      async loginHandler() {
-//          const data = { 'username': this.username, 'password': this.password }
-//          try{
-//            const response = await this.$auth.loginWith('local', { data: data})
-//            this.$auth.$storage.setUniversal('username', response.data.username)
-//            await this.$auth.setUserToken(response.data.access_token, response.data.refresh_token)
-// 	        console.log(response.data.message)                                                           
-//          } catch(e) {
-//             console(e)
-//          }
-//       }
-//    }
-// };
 </script>

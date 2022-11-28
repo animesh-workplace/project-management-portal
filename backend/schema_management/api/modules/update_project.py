@@ -2,10 +2,10 @@ from django.apps import apps
 from rest_framework.response import Response
 from table_factory.api.tasks import UpdateData
 from rest_framework import generics, serializers
-from schema_management.models import ProjectHandler
 from rest_framework.permissions import IsAuthenticated
 from user_management.api.utils import create_uniform_response
 from rest_framework import generics, exceptions, serializers, status
+from schema_management.models import ProjectHandler, MetadataHandler
 
 
 class UpdateProjectSerializer(serializers.Serializer):
@@ -23,10 +23,29 @@ class UpdateProjectSerializer(serializers.Serializer):
         data = value.get("data")
         app_model = self.context["view"].get_queryset()[modelname.lower()]
         config_data = list(
-            ProjectHandler.objects.filter(table_name=modelname).values_list(
+            ProjectHandler.objects.filter(table_name__iexact=modelname).values_list(
                 "config", flat=True
             )
         )[0]
+
+        # Get the list of metadata tables which are from given sample identifier
+        metadata_tables = list(
+            MetadataHandler.objects.values_list("name", flat=True).filter(
+                project_name_id=modelname.lower()
+            )
+        )
+        unique_key = next(filter(lambda i: i["unique"] == "True", config_data))
+        if (
+            app_model.objects.filter(id=pk)
+            .values_list(unique_key["name"].lower(), flat=True)
+            .exists()
+        ):
+            unique_key_id = list(
+                app_model.objects.filter(id=pk).values_list(
+                    unique_key["name"].lower(), flat=True
+                )
+            )[0]
+        update_key = ""
         colmns = []
         for i in config_data:
             colmns.append(i["name"].lower())
@@ -37,6 +56,8 @@ class UpdateProjectSerializer(serializers.Serializer):
             raise exceptions.ValidationError(f"Primary key is not exists")
         for row in data:
             for i in config_data:
+                if i["name"].lower() == unique_key["name"].lower():
+                    update_key = row[i["name"].lower()]
                 if not i["name"].lower() in row:
                     checks_matching = False
                     raise exceptions.ValidationError(
@@ -70,14 +91,8 @@ class UpdateProjectSerializer(serializers.Serializer):
                             i["name"].lower(), flat=True
                         ).filter(id=pk)
                     )[0]
-                    print(l1)
-                    print(l)
                     l.remove(l1)
-                    print(row[i["name"].lower()])
-                    # if row[i["name"].lower()] == l1:
-                    #     self.update_table(modelname, data, app_model, pk)
-                    # return value
-                    # break
+
                     if row[i["name"].lower()] in l:
                         checks_matching = False
                         raise exceptions.ValidationError(
@@ -85,6 +100,16 @@ class UpdateProjectSerializer(serializers.Serializer):
                         )
         if checks_matching == True:
             self.update_table(modelname, data, app_model, pk)
+            for i in metadata_tables:
+                metadataname = (
+                    f"{modelname.split('_')[0]}_{modelname.split('_')[1]}_{i}_metadata"
+                )
+                metadats = self.context["view"].get_queryset()[metadataname.lower()]
+                metadata_key = f"{unique_key['name']}_id".lower()
+                if metadats.objects.filter(**{metadata_key: unique_key_id}).exists():
+                    metadats.objects.filter(**{metadata_key: unique_key_id}).update(
+                        **{metadata_key: update_key}
+                    )
             return value
 
     @staticmethod
